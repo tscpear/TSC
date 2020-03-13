@@ -72,6 +72,10 @@ public interface TestMapper {
      * 获取到当前查询到测试用例数量--列表
      */
     Integer getCountList(ListParam param);
+    /**
+     * 通过testcaseId 获取依赖的测试用例
+     */
+    String getRelyByTestcaseId(Integer testcaseId);
 
 
 }

@@ -233,6 +233,7 @@ public class ApiUtil {
         verification.objToObj(head, head1);
         verification.objToObj(head, head2Value);
         verification.objToObj(head, head3);
+        System.err.println(apiUtilData.getTestCase().getTestMark()+head);
         return head;
     }
 
@@ -262,7 +263,7 @@ public class ApiUtil {
         JSONObject jsonBase;
         int bobyType;
         JSONObject jsonRelyWay = verification.stringToJsonObject(apiUtilData.getUri().getJsontext2());
-        JSONObject jsonManualWay = verification.stringToJsonObject(apiUtilData.getUri().getJsontext2());
+        JSONObject jsonManualWay = verification.stringToJsonObject(apiUtilData.getUri().getJsontext3());
         String jsonRelyTest = apiUtilData.getTestCase().getRely();
         JSONObject jsonManualTest = verification.stringToJsonObject(apiUtilData.getTestCase().getJson());
         //判断boby的传参可是 数组 还是 对象
@@ -299,15 +300,15 @@ public class ApiUtil {
             Iterator<String> relyUriNameWay = jsonRelyWay.keys();
             while (relyUriNameWay.hasNext()) {
                 String uriIdName = relyUriNameWay.next();
-                String uriId = uriIdName.split(".")[0];
-                JSONObject nameWays = verification.stringToJsonObject(jsonRelyWay.getString(uriIdName));
+                String uriId = uriIdName.split("\\.")[0];
+                JSONObject nameWays = verification.stringToJsonObject(jsonRelyWay.get(uriIdName).toString());
                 Iterator<String> nameWay = nameWays.keys();
                 while (nameWay.hasNext()) {
                     String name = nameWay.next();
                     String way = nameWays.getString(name);
                     JsonPath p = JsonPath.compile(way);
                     JSONObject values = getSaveValue(apiUtilData, Integer.parseInt(uriId));
-                    String value = values.getString(name);
+                    String value = values.get(name).toString();
                     ext.set(p, value);
                 }
             }
@@ -333,6 +334,8 @@ public class ApiUtil {
             String key = head.next();
             post.setHeader(key, headObj.get(key).toString());
         }
+
+        System.err.println(post.getAllHeaders().toString());
 
         //放入请求提系信息
         JSONObject form = getBobyOfForm(apiUtilData);
@@ -548,7 +551,7 @@ public class ApiUtil {
      * 获取返回体
      */
     public String getResult(Map<String, String> map) {
-
+        System.err.println(map.get("result"));
         return map.get("result");
     }
 

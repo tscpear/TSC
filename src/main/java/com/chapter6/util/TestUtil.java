@@ -1,6 +1,7 @@
 package com.chapter6.util;
 
 
+import com.chapter6.mapper.TestMapper;
 import com.chapter6.mapper.TestRecordMapper;
 import com.chapter6.mapper.UriMapper;
 import com.chapter6.model.ApiUtilData;
@@ -31,25 +32,33 @@ public class TestUtil {
     private Verification verification;
     @Autowired
     private TestRecordMapper testRecordMapper;
+    @Autowired
+    private TestMapper testMapper;
 
     /**
      * 登入+获取Token 或者
      */
-    public String getToken(ApiUtilData data,long record) throws Throwable {
+    public String getToken(ApiUtilData data, long record) throws Throwable {
 
-        long userGroupId =System.currentTimeMillis();
+        long userGroupId = System.currentTimeMillis();
         RequestRecordTest requestRecordTest = new RequestRecordTest();
         requestRecordTest.setTestcaseId(0);
         requestRecordTest.setRecordId(record);
         requestRecordTest.setUserGroupId(userGroupId);
         requestRecordTest.setUriId(0);
 
+        //创建一个新的数据集合
         ApiUtilData loginData = new ApiUtilData();
+        //创建一个新的  登入专用的dotest数据集合
         RequestDoTest loginDoTest = new RequestDoTest();
+
+        //存入环境
         loginDoTest.setEnvironment(
                 data.getDoTest().getEnvironment()
         );
-        RequestUri loginUri = uriMapper.getUriById(5);
+
+        //获取登入接口的数据
+        RequestUri loginUri = uriMapper.getUriById(0);
 
         RequestTestCase loginTestCase = new RequestTestCase();
         JSONObject webformOfTest = new JSONObject();
@@ -58,10 +67,10 @@ public class TestUtil {
             webformOfTest.put("grant_type", "store_password");
             webformOfTest.put("password", DigestUtils.md5DigestAsHex(
                     data.getDoTest().getPassword().getBytes()));
-        }else{
-            webformOfTest.put("grant_type","sms_code");
-            if(data.getDoTest().getCodeword().equals("8888")){
-                webformOfTest.put("smsCode",DigestUtils.md5DigestAsHex(
+        } else {
+            webformOfTest.put("grant_type", "sms_code");
+            if (data.getDoTest().getCodeword().equals("8888")) {
+                webformOfTest.put("smsCode", DigestUtils.md5DigestAsHex(
                         data.getDoTest().getCodeword().getBytes()));
             }
         }
@@ -75,25 +84,23 @@ public class TestUtil {
 
         //获取response
 
-        Map<String,String> response = apiUtil.getResponse(loginData, apiUtil.getLoginBasic(data));
+        Map<String, String> response = apiUtil.getResponse(loginData, apiUtil.getLoginBasic(data));
         /*发送请求*/
         JSONObject result = verification.stringToJsonObject(
                 apiUtil.getResult(response)
         );
 
 
-
-
         requestRecordTest.setResult(1);
         requestRecordTest.setResponse(result.toString());
         JSONObject saves = new JSONObject();
-        saves.put("userId",result.get("userId").toString());
-        saves.put("userType",result.get("userType").toString());
+        saves.put("userId", result.get("userId").toString());
+        saves.put("userType", result.get("userType").toString());
         requestRecordTest.setValue(saves.toString());
 
 
-        String tokenAndUserGroupId = result.getString("access_token")+","+userGroupId;
-        if(result.has("access_token")){
+        String tokenAndUserGroupId = result.getString("access_token") + "," + userGroupId;
+        if (result.has("access_token")) {
 
         }
 
@@ -108,10 +115,10 @@ public class TestUtil {
     public List<Long> doTestOnce(RequestDoTest doTest) throws Throwable {
         long record = System.currentTimeMillis();
         ApiUtilData data = apiUtil.getData(doTest);
-        String tokenAndUserGroupId =getToken(data,record);
+        String tokenAndUserGroupId = getToken(data, record);
 
         //获取token
-        String token = "bearer "+tokenAndUserGroupId.split(",")[0];
+        String token = "bearer " + tokenAndUserGroupId.split(",")[0];
 
         RequestRecordTest requestRecordTest = new RequestRecordTest();
 
@@ -124,25 +131,37 @@ public class TestUtil {
         data.setRequestRecordTest(requestRecordTest);
 
 
-        Map<String,String> response = apiUtil.getResponse(data,token);
+        Map<String, String> response = apiUtil.getResponse(data, token);
+
+        /**
+         * 此处缺一个登入成功的判断
+         */
         String responseValueString = apiUtil.getResult(response);
 
 
-        //存放需要的值
-        if(data.getUri().getSave().length()>0){
-            JSONObject saves = verification.stringToJsonObject(data.getUri().getSave());
-            JSONObject saveValues = new JSONObject();
-            Iterator<String> save = saves.keys();
-            while (save.hasNext()){
-                String saveName = save.next();
-                String saveWay = saves.get(saveName).toString();
-                Object values = JsonPath.read(responseValueString,saveWay);
-                saveValues.put(saveName,values);
+        //期望值的验证
+        if (data.getTestCase().getExpectOfStatus() == 3) {
+            requestRecordTest.setStatusExpect(apiUtil.isStatus(data, apiUtil.getStatus(response)));
+
+
+            if (apiUtil.getStatus(response).equals("200")) {
+                if (data.getUri().getSave().length() > 0) {
+                    JSONObject saves = verification.stringToJsonObject(data.getUri().getSave());
+                    JSONObject saveValues = new JSONObject();
+                    Iterator<String> save = saves.keys();
+                    while (save.hasNext()) {
+                        String saveName = save.next();
+                        String saveWay = saves.get(saveName).toString();
+                        Object values = JsonPath.read(responseValueString, saveWay);
+                        saveValues.put(saveName, values);
+                    }
+
+
+                    requestRecordTest.setValue(saveValues.toString());
+                }
             }
 
 
-
-            requestRecordTest.setValue(saveValues.toString());
         }
 
 
@@ -153,17 +172,12 @@ public class TestUtil {
         requestRecordTest.setResponse(apiUtil.getResult(response));
         requestRecordTest.setUriId(data.getUri().getUriId());
 
-        //期望值的验证
-        if(data.getTestCase().getExpectOfStatus()==3){
-            requestRecordTest.setStatusExpect(apiUtil.isStatus(data,apiUtil.getStatus(response)));
-        }
-
 
         testRecordMapper.insert(requestRecordTest);
 
 
         System.out.println(responseValueString);
-        List<Long> list  = new ArrayList<>();
+        List<Long> list = new ArrayList<>();
         list.add(data.getRequestRecordTest().getRecordId());
         list.add(data.getRequestRecordTest().getUserGroupId());
         return list;
@@ -172,22 +186,30 @@ public class TestUtil {
     /**
      * 测试用例组的查询
      */
-    public void doGroupTest(RequestDoTest doTest,Long record) throws Throwable {
+    public void doGroupTest(RequestDoTest doTest, Long record) throws Throwable {
+
+        //测试用例id组list
         String testIdGroup = doTest.getTestIdGroup();
-        String[] testIdList =  testIdGroup.split(",");
-        ApiUtilData loginData =  new ApiUtilData();
+
+
+        String[] testIdList = testIdGroup.split(",");
+
+        //创建给登入接口要用的dodata 取第一个测试用例的数据就好了
+        RequestDoTest loginDoTest = doTest;
+        loginDoTest.setTestCaseId(Integer.parseInt(testIdList[0]));
+
         doTest.setTestCaseId(Integer.parseInt(testIdList[0]));
-        loginData.setDoTest(doTest);
-        String tokenAndUserGroupId =getToken(loginData,record);
+        ApiUtilData loginData = apiUtil.getData(loginDoTest);
+
+        String tokenAndUserGroupId = getToken(loginData, record);
 
         //获取token
-        String token = "bearer "+tokenAndUserGroupId.split(",")[0];
+        String token = "bearer " + tokenAndUserGroupId.split(",")[0];
 
         //获取用户组ID
         long userGroupId = Long.parseLong(tokenAndUserGroupId.split(",")[1]);
 
-        for(String testId : testIdList){
-
+        for (String testId : testIdList) {
 
 
             RequestRecordTest requestRecordTest = new RequestRecordTest();
@@ -195,28 +217,38 @@ public class TestUtil {
             requestRecordTest.setUserGroupId(userGroupId);
 
 
-            RequestDoTest doTestOne =   doTest;
+            RequestDoTest doTestOne = doTest;
             doTestOne.setTestCaseId(Integer.parseInt(testId));
 
             ApiUtilData data = apiUtil.getData(doTest);
             data.setRequestRecordTest(requestRecordTest);
 
-            Map<String,String> response = apiUtil.getResponse(data,token);
+            Map<String, String> response = apiUtil.getResponse(data, token);
             String responseValueString = apiUtil.getResult(response);
 
-            //存放需要的值
-            if(data.getUri().getSave().length()>0){
-                JSONObject saves = verification.stringToJsonObject(data.getUri().getSave());
-                JSONObject saveValues = new JSONObject();
-                Iterator<String> save = saves.keys();
-                while (save.hasNext()){
-                    String saveName = save.next();
-                    String saveWay = saves.get(saveName).toString();
-                    Object values = JsonPath.read(responseValueString,saveWay);
-                    saveValues.put(saveName,values);
+            //期望值的验证
+            if (data.getTestCase().getExpectOfStatus() == 3) {
+                requestRecordTest.setStatusExpect(apiUtil.isStatus(data, apiUtil.getStatus(response)));
+
+
+                //存放需要的值
+                if (apiUtil.getStatus(response).equals("200")) {
+                    if (data.getUri().getSave().length() > 0) {
+                        JSONObject saves = verification.stringToJsonObject(data.getUri().getSave());
+                        JSONObject saveValues = new JSONObject();
+                        Iterator<String> save = saves.keys();
+                        while (save.hasNext()) {
+                            String saveName = save.next();
+                            String saveWay = saves.get(saveName).toString();
+                            Object values = JsonPath.read(responseValueString, saveWay);
+                            saveValues.put(saveName, values);
+                        }
+                        requestRecordTest.setValue(saveValues.toString());
+                    }
                 }
-                requestRecordTest.setValue(saveValues.toString());
+
             }
+
 
             requestRecordTest.setUserGroupId(userGroupId);
             requestRecordTest.setRecordId(record);
@@ -224,11 +256,6 @@ public class TestUtil {
             requestRecordTest.setResult(1);
             requestRecordTest.setResponse(apiUtil.getResult(response));
             requestRecordTest.setUriId(data.getUri().getUriId());
-
-            //期望值的验证
-            if(data.getTestCase().getExpectOfStatus()==3){
-                requestRecordTest.setStatusExpect(apiUtil.isStatus(data,apiUtil.getStatus(response)));
-            }
 
 
             testRecordMapper.insert(requestRecordTest);
@@ -239,11 +266,40 @@ public class TestUtil {
         }
 
 
-
     }
 
     /**
-     * 存储测试记录判断id值
+     * 对测试用例的排序处理
      */
+    public Map<String, Object> sortTestIdList(String[] testIdList) {
+        Map<String, Object> map = new HashMap<>();
+        List<Integer> testIds = new ArrayList<>();
+        for (String testIdString : testIdList) {
+            testIds.add(Integer.parseInt(testIdString));
+        }
+
+
+        for (Integer testid : testIds) {
+            String rely = testMapper.getRelyByTestcaseId(testid);
+
+            //看一下依赖是不是都是存在的
+            if (rely != null) {
+                if (rely.contains(",")) {
+                    String[] relyList = rely.split(",");
+                    for (String relyId : relyList) {
+                        if (!testIds.contains(Integer.parseInt(relyId))) {
+                            String msg = "测试用例" + testid + "的依赖用例" + relyId + "不存在！";
+                            map.put("msg", msg);
+                            return map;
+                        }
+
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
 
 }

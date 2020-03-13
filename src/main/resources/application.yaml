@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: db_user
     password: kybb123456
-    url: jdbc:mysql://10.1.80.166:3306/test_tsc_b?useUnicode=true&characterEncoding=UTF8&useSSL=false
+    url: jdbc:mysql://dev-mysql.zhilun-base.com:3306/test_tsc_b?useUnicode=true&characterEncoding=UTF8&useSSL=false
 
 #配置sql映射
 mybatis:

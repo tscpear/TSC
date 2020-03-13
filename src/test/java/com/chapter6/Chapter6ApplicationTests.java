@@ -25,7 +25,9 @@ class Chapter6ApplicationTests {
 
     @Test
     void contextLoads() throws Throwable {
-
+        String s = "a";
+        String[] ss = s.split(",");
+        System.out.println(ss[0]);
 
     }
 

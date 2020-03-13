@@ -65,6 +65,6 @@ public class DoTestController {
         testUtil.doGroupTest(doTest,record);
 
 
-        return null;
+        return responseJson.getMsg("ssss");
     }
 }

@@ -225,7 +225,7 @@
             form.on("submit(doTest)", function (data) {
                 console.log(data);
                 $.ajax({
-                    url: "/dotest/once",
+                    url: "/dotest/group",
                     data: data.field,
                     type: "post",
                     dataType: "json",

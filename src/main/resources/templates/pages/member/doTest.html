@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>添加测试用例</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../static/home/css/oksub.css">
+</head>
+<body>
+<div class="ok-body">
+    <form class="layui-form ok-form layui-form-pane" lay-filter="filter" action="">
+        <div class="layui-form-item layui-input-inline" style="width: 30%">
+            <label class="layui-form-label">用例编号</label>
+            <div class="layui-input-block">
+                <input type="text" name="testCaseId" autocomplete="off" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item layui-input-inline" style="width: 30%">
+            <label class="layui-form-label">接口</label>
+            <div class="layui-input-block">
+                <input type="text" name="uri" autocomplete="off" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item layui-input-inline" style="width: 30%">
+            <label class="layui-form-label">配置环境</label>
+            <div class="layui-input-block">
+                <select name="environment">
+                    <option value="1" selected>准生产</option>
+                    <option value="2">联调主</option>
+                    <option value="3">联调次</option>
+                    <option value="4">测试主</option>
+                    <option value="5">测试次</option>
+                    <option value="6">模拟环境</option>
+                    <option value="7">生产</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item" style="width: 90%">
+            <label class="layui-form-label">描述</label>
+            <div class="layui-input-block">
+                <input type="text" name="testMark" autocomplete="off" class="layui-input"
+                       disabled>
+            </div>
+        </div>
+        <!-- 账号输入区域-->
+        <div class="layui-input-inline layui-form-item">
+            <label class="layui-form-label">账号</label>
+            <div class="layui-input-block">
+                <input type="text" name="storeAccount" autocomplete="off" class="layui-input"
+                       lay-verify="required" id="accountName">
+            </div>
+        </div>
+        <div class="layui-form-item layui-input-inline">
+            <label class="layui-form-label">密码/验证码</label>
+            <div class="layui-input-block">
+                <select name="wordType" lay-filter="wordType" id="environment">
+                    <option value="1" selected>密码</option>
+                    <option value="2">验证码：8888</option>
+                    <option value="3">真实验证码</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-input-inline layui-form-item" id="password">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-block">
+                <input type="text" name="password" autocomplete="off" class="layui-input" id="passwordText">
+            </div>
+        </div>
+        <div class="layui-input-inline layui-form-item" id="codeword" style="display: none">
+            <label class="layui-form-label">验证码</label>
+            <div class="layui-input-block">
+                <input type="text" name="codeword" autocomplete="off" class="layui-input" id="codewordText"
+                >
+            </div>
+        </div>
+        <div class="layui-form-item layui-input-inline" id="getCodeword" style="display:none">
+            <input class="layui-btn" type="button" value="获取验证码" onclick="getcodeword();">
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="doTest">执行用例</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+        <div class="layui-form-item" id="statusExpect">
+        </div>
+        <div class="layui-form-item layui-form-text" id="response" style="overflow-y:visible">
+        </div>
+
+    </form>
+</div>
+
+
+<!--js逻辑-->
+<script src="../../../static/home/lib/layui/layui.js"></script>
+<script>
+    var initData;
+
+    function initForm(data) {
+        console.log(data);
+        var jsonString = JSON.stringify(data);
+        initData = JSON.parse(jsonString);
+    }
+
+    layui.use(["element", "form", "okLayer", "okUtils", "jquery", "layer"], function () {
+
+        var form = layui.form;
+        var okLayer = layui.okLayer;
+        var okUtils = layui.okUtils;
+        var $ = layui.jquery;
+        var layer = layui.layer;
+
+        form.on("select(wordType)", function (data) {
+            if (data.value == 1) {
+                showByCheckBox(true, "password", "passwordText");
+                showByCheckBox(false, "codeword", "codewordText");
+                $("#getCodeword").hide();
+            } else if (data.value == 2) {
+                showByCheckBox(false, "password", "passwordText");
+                showByCheckBox(true, "codeword", "codewordText");
+                $("#getCodeword").hide();
+                initData.codeword = "8888"
+                form.val("filter", initData);
+            } else {
+                showByCheckBox(false, "password", "passwordText");
+                showByCheckBox(true, "codeword", "codewordText");
+                $("#getCodeword").show();
+            }
+        });
+
+        form.on("submit(doTest)", function (data) {
+            console.log(data);
+            $.ajax({
+                url: "/dotest/once",
+                data: data.field,
+                type: "post",
+                dataType: "json",
+                success: function (response) {
+                    var value = response.data.responseValue.toString();
+                    $("#response").append(
+                        "<label class=\"layui-form-label\">返回值</label>\n" +
+                        "                <div class=\"layui-input-block\">\n" +
+                        "                    <textarea  placeholder=\"请输入内容\" class=\"layui-textarea\" id='ttt'></textarea>\n" +
+                        "                </div>"
+                    );
+                    $("#ttt").val(value);
+                    $("#ttt").height($("#ttt")[0].scrollHeight);
+                    $("#ttt").on("keyup keydown", function () {
+                        $(this).height(this.scrollHeight);
+                    });
+
+                    var expect = response.data.statusExpect.toString();
+                    var expectObject = JSON.parse(expect);
+                    if (expect.length>0) {
+
+                        if (expect == "true") {
+                            $("#statusExpect").append(
+                                "<i class=\"layui-icon layui-icon-face-smile\" style=\"font-size: 30px; color:green; text-align: center\" >测试通过</i>"
+                            );
+                        } else {
+                            $("#statusExpect").append(
+                                "<i class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 30px; color:green;\">状态码：期望值："+expectObject.get("expected")+",实际值："+expectObject.get("result")+"</i>"
+                            );
+                        }
+                    }
+                }
+            });
+            return false;
+        });
+
+        form.val("filter", initData);
+        form.render();
+
+
+        /*方法区*/
+
+        //通过复选框，决定展示不展示,同时清空value，移除必填的属性
+        function showByCheckBox(b, showId, showTextId) {
+            if (b) {
+                $("#" + showId + "").show();
+                $("#" + showTextId + "").attr("lay-verify", "required");
+            } else {
+                $("#" + showId + "").hide();
+                $("#" + showTextId + "").removeAttr("lay-verify");
+                $("#" + showTextId + "").val("");
+            }
+        }
+    });
+
+
+</script>
+<script>
+    function getcodeword() {
+        layui.use(['layer'], function () {
+            var layer = layui.layer;
+            var $ = layui.jquery;
+            var telephone = $('#accountName').val();
+            var environment = $('#environment').val();
+            if (telephone.length != 11) {
+                layer.msg("手机号码格式错误", {
+                    time: 2000,
+                });
+            } else {
+                layer.msg('确定发送验证码？', {
+                    time: 5000,//2秒自动关闭
+                    btn: ['确定', '取消'],
+                    yes: function (index) {
+                        $.ajax({
+                            url: "/doTest",
+                            data: {'accountName': telephone, 'environment': environment},
+                            type: "Post",
+                            dataType: "json",
+
+                        });
+
+                        layer.close(index);
+                    }
+                });
+            }
+        });
+    }
+
+</script>
+<script src="../../../static/home/lib/wangEditor/release/wangEditor.min.js"></script>
+</body>
+</html>

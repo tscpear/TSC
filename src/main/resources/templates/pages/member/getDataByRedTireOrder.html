@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>更具网红订单产生数据</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../static/home/css/oksub.css">
+</head>
+<body>
+<div class="ok-body">
+    <!--form表单-->
+    <!--输入接口名称-->
+    <form class="layui-form ok-form" lay-filter="filter">
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择环境</label>
+            <div class="layui-input-block">
+                <input type="radio" name="environment" value="1" title="测试次" >
+                <input type="radio" name="environment" value="2" title="测试主" >
+                <input type="radio" name="environment" value="3" title="准生产" checked>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">订单号</label>
+            <div class="layui-input-block">
+                <input type="text" lay-verify="required" name="orderSn" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">订单类型</label>
+            <div class="layui-input-block">
+                <input type="radio" name="orderType" value="1" title="门店网红订单" checked>
+                <input type="radio" name="orderType" value="2" title="司机网红订单订单" >
+                <input type="radio" name="orderType" value="3" title="司机取货点网红订单" >
+                <input type="radio" name="orderType" value="4" title="司机网红订单（门店库存不足）" >
+                <input type="radio" name="orderType" value="5" title="车队网红订单（安装）" >
+                <input type="radio" name="orderType" value="6" title="车队网红订单（免安装）" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">数据节点</label>
+            <div class="layui-input-block">
+                <select name="testDataPoint">
+                    <option value="1"></option>
+                    <option value="2" selected>分仓出库（胎号）</option>
+                    <option value="3">门店入库（胎号）</option>
+                    <option value="4">门店出库（出库单号）</option>
+                    <option value="5">司机领取质保卡（质保卡编号）</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="submit">数据生成</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--js逻辑-->
+<script src="../../../static/home/lib/layui/layui.js"></script>
+<script>
+    layui.use(["form", "okLayer", "okUtils","jquery","layer"], function () {
+        var form = layui.form;
+        var okLayer = layui.okLayer;
+        var okUtils = layui.okUtils;
+        var layer=layui.layer;
+        form.on("submit(submit)", function (data) {
+            okUtils.ajax("/createData/byOrderSn", "post", data.field, true).done(function (response) {
+                console.log(response);
+                okLayer.openTick({
+                    title:"生成数据",
+                    type:0,
+                    content:response.msg
+                })
+            }).fail(function (error) {
+                console.log(error)
+            });
+            return false;
+        });
+    })
+</script>
+<script src="../../../static/home/lib/wangEditor/release/wangEditor.min.js"></script>
+
+</body>
+</html>

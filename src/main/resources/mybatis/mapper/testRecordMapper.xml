@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chapter6.mapper.TestRecordMapper">
+    <resultMap id="recordResultMap" type="com.chapter6.model.request.RequestRecordTest">
+        <result property="recordId" column="record_id"/>
+        <result property="id" column="id"/>
+        <result property="value" column="value"/>
+        <result property="testcaseId" column="testcase_id"/>
+        <result property="request" column="request"/>
+        <result property="response" column="response"/>
+        <result property="result" column="result"/>
+        <result property="logs" column="logs"/>
+        <result property="userGroupId" column="user_group_id"/>
+        <result property="uriId" column="uri_id"/>
+        <result property="responseValueExpect" column="response_value_expect"/>
+        <result property="sqlExpect" column="sql_expect"/>
+        <result property="statusExpect" column="status_expect"/>
+    </resultMap>
+    <insert id="insert">
+        insert into test_record (record_id,
+                                 value,
+                                 testcase_id,
+                                 request,
+                                 response,
+                                 result,
+                                 logs,
+                                 user_group_id,
+                                 uri_id,
+                                 response_value_expect,
+                                 sql_expect,
+                                 status_expect
+        )
+        value
+        (
+        #{recordId}
+        ,
+        #{value}
+        ,
+        #{testcaseId}
+        ,
+        #{request}
+        ,
+        #{response}
+        ,
+        #{result}
+        ,
+        #{logs}
+        ,
+        #{userGroupId}
+        ,
+        #{uriId}
+        ,
+        #{responseValueExpect}
+        ,
+        #{sqlExpect}
+        ,
+        #{statusExpect}
+        );
+    </insert>
+    <select id="getSaveValue" resultType="java.lang.String">
+        select value
+        from test_record
+        where testcase_id = #{testcaseId}
+          and record_id = #{recordId};
+    </select>
+    <select id="getResponse" resultType="java.lang.String">
+        select response
+        from test_record
+        where testcase_id = #{testcaseId}
+          and record_id = #{recordId}
+          and user_group_id = #{userGroupId};
+    </select>
+    <select id="getValue" resultType="java.lang.String">
+        select value
+        from test_record
+        where uri_id = #{uriId}
+          and user_group_id = #{userGroupId}
+          and record_id = #{recordId};
+    </select>
+    <select id="getTestRecord" resultMap="recordResultMap">
+        select *
+        from test_record
+        where record_id = #{recordId}
+          and user_group_id = #{userGroupId}
+          and testcase_id = #{testcaseId}
+    </select>
+
+</mapper>

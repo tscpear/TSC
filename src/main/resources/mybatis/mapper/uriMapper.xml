@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chapter6.mapper.UriMapper">
+    <resultMap id="uriResultMap" type="com.chapter6.model.request.RequestUri">
+        <result property="uriId" column="id"/>
+        <result property="uri" column="uri"/>
+        <result property="device" column="device"/>
+        <result property="method" column="method"/>
+        <result property="mark" column="mark"/>
+        <result property="uripar" column="uripar"/>
+        <result property="urivar" column="urivar"/>
+        <result property="head1" column="head1"/>
+        <result property="head2" column="head2"/>
+        <result property="head3" column="head3"/>
+        <result property="headtext1" column="headtext1"/>
+        <result property="headtext2" column="headtext2"/>
+        <result property="headtext3" column="headtext3"/>
+        <result property="webform1" column="webform1"/>
+        <result property="webform2" column="webform2"/>
+        <result property="webform3" column="webform3"/>
+        <result property="formtext1" column="formtext1"/>
+        <result property="formtext2" column="formtext2"/>
+        <result property="formtext3" column="formtext3"/>
+        <result property="json1" column="json1"/>
+        <result property="json2" column="json2"/>
+        <result property="json3" column="json3"/>
+        <result property="jsontext1" column="jsontext1"/>
+        <result property="jsontext2" column="jsontext2"/>
+        <result property="jsontext3" column="jsontext3"/>
+        <result property="response" column="response"/>
+        <result property="save" column="save"/>
+        <result property="disable" column="disable"/>
+    </resultMap>
+
+    <sql id="list_count">
+        <if test="uriValue != null">
+            and uri like CONCAT('%',#{uriValue},'%')
+        </if>
+        <if test="uriMark != null">
+            and mark like CONCAT('%',#{uriMark},'%')
+        </if>
+        <if test="device != null">
+            and device = #{device}
+        </if>
+    </sql>
+
+    <select id="uriList" resultMap="uriResultMap">
+        select *
+        from uri
+        where disable = 0
+        <include refid="list_count"/>
+        limit #{pageBegin},#{pageEnd};
+    </select>
+
+    <select id="getCountList" resultType="Integer">
+        select count(*) from uri where 1=1
+        <include refid="list_count"/>;
+
+    </select>
+
+    <select id="passParameterByUriId" resultType="java.lang.String">
+        select passParameter
+        from uri_copy
+        where id = #{id};
+    </select>
+    <insert id="insertUri">
+        insert into uri (uri,
+                         device,
+                         method,
+                         mark,
+                         uripar,
+                         urivar,
+                         head1,
+                         head2,
+                         head3,
+                         headtext1,
+                         headtext2,
+                         headtext3,
+                         webform1,
+                         webform2,
+                         webform3,
+                         formtext1,
+                         formtext2,
+                         formtext3,
+                         json1,
+                         json2,
+                         json3,
+                         jsontext1,
+                         jsontext2,
+                         jsontext3,
+                         response,
+                         save
+        )
+        value
+        (
+        #{uri}
+        ,
+        #{device}
+        ,
+        #{method}
+        ,
+        #{mark}
+        ,
+        #{uripar}
+        ,
+        #{urivar}
+        ,
+        #{head1}
+        ,
+        #{head2}
+        ,
+        #{head3}
+        ,
+        #{headtext1}
+        ,
+        #{headtext2}
+        ,
+        #{headtext3}
+        ,
+        #{webform1}
+        ,
+        #{webform2}
+        ,
+        #{webform3}
+        ,
+        #{formtext1}
+        ,
+        #{formtext2}
+        ,
+        #{formtext3}
+        ,
+        #{json1}
+        ,
+        #{json2}
+        ,
+        #{json3}
+        ,
+        #{jsontext1}
+        ,
+        #{jsontext2}
+        ,
+        #{jsontext3}
+        ,
+        #{response}
+        ,
+        #{save}
+        );
+    </insert>
+    <update id="updataUri">
+        update uri
+        set
+            uri       = #{uri},
+            device=#{device},
+            method=#{method},
+            mark      =#{mark},
+            uripar=#{uripar},
+            urivar=#{urivar},
+            head1     = #{head1},
+            head2     = #{head2},
+            head3     = #{head3},
+            headtext1 = #{headtext1},
+            headtext2 = #{headtext2},
+            headtext3 = #{headtext3},
+            webform1  = #{webform1},
+            webform2  = #{webform2},
+            webform3  = #{webform3},
+            formtext1 = #{formtext1},
+            formtext2 = #{formtext2},
+            formtext3 = #{formtext3},
+            json1     = #{json1},
+            json2     = #{json2},
+            json3     = #{json3},
+            jsontext1 = #{jsontext1},
+            jsontext2 = #{jsontext2},
+            jsontext3 = #{jsontext3},
+            response  = #{response},
+            save      = #{save}
+        where id = #{uriId};
+    </update>
+    <select id="countUri" resultType="Integer">
+        select count(*)
+        from uri;
+    </select>
+    <select id="getUriIdByUri" resultType="Integer">
+        select id
+        from uri
+        where uri = #{uri};
+    </select>
+    <select id="getUriById" resultMap="uriResultMap">
+        select *
+        from uri
+        where id = #{uriId};
+    </select>
+    <update id="delUri">
+        update uri
+        set disable = 1
+        where id = #{uriId};
+    </update>
+    <select id="getUriByUriId" resultType="java.lang.String">
+        select uri
+        from uri
+        where id = #{uriId};
+    </select>
+</mapper>

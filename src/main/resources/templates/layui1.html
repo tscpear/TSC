@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>图标</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+</head>
+<body>
+<script src="../static/layui/layui.js"></script>
+
+<i class="layui-icon layui-anim layui-anim-up">&#xe68f;</i>
+<div class="layui-btn-group" lay-filter="demo">
+    <button type="button" class="layui-btn" id="add">增加</button>
+    <button type="button" class="layui-btn" id="reduce">减少</button>
+</div>
+<ul class="layui-nav" lay-filter="">
+    <li class="layui-nav-item"><a href="">最新活动</a></li>
+    <li class="layui-nav-item layui-this"><a href="">产品</a></li>
+    <li class="layui-nav-item"><a href="">大数据</a></li>
+    <li class="layui-nav-item">
+        <a href="javascript:;">解决方案</a>
+        <dl class="layui-nav-child"> <!-- 二级菜单 -->
+            <dd><a href="">移动模块</a></dd>
+            <dd><a href="">后台模版</a></dd>
+            <dd><a href="">电商平台</a></dd>
+        </dl>
+    </li>
+    <li class="layui-nav-item"><a href="">社区</a></li>
+    <li class="layui-nav-item" style="float:right">
+        <a href=""><img src="//t.cn/RCzsdCq" class="layui-nav-img">我</a>
+        <dl class="layui-nav-child">
+            <dd><a href="javascript:;">修改信息</a></dd>
+            <dd><a href="javascript:;">安全管理</a></dd>
+            <dd><a href="javascript:;">退了</a></dd>
+        </dl>
+    </li>
+</ul>
+<ul class="layui-nav layui-nav-tree" lay-filter="">
+    <li class="layui-nav-item"><a href="">最新活动</a></li>
+    <li class="layui-nav-item layui-this"><a href="">产品</a></li>
+    <li class="layui-nav-item"><a href="">大数据</a></li>
+    <li class="layui-nav-item">
+        <a href="javascript:;">解决方案</a>
+        <dl class="layui-nav-child"> <!-- 二级菜单 -->
+            <dd><a href="">移动模块</a></dd>
+            <dd><a href="">后台模版</a></dd>
+            <dd><a href="">电商平台</a></dd>
+        </dl>
+    </li>
+    <li class="layui-nav-item"><a href="">社区</a></li>
+</ul>
+
+<script>
+    //注意：导航 依赖 element 模块，否则无法进行功能性操作
+    layui.use('element', function(){
+        var element = layui.element;
+
+        //…
+    });
+</script>
+
+
+
+<!--<script type="text/javascript">
+    layui.use(["jquery"],function () {
+        var $=layui.jquery;
+        $("#add").click(function () {
+            alert($(this).html())
+        })
+        $(".layui-btn").click(function () {
+            alert($(this).html())
+        })
+    })
+</script>-->
+<script>
+    layui.use(['element','jquery'],function () {
+        var $=layui.jquery;
+        var element=layui.element;
+
+        $("#add").click(function () {
+            element.tabAdd('demo', {
+                title: '选项卡的标题'
+                ,content: '选项卡的内容' //支持传入html
+                ,id: '选项卡标题的lay-id属性值'
+            });
+        })
+        $("#reduce").click(function () {
+
+        })
+    })
+</script>
+</body>
+</html>

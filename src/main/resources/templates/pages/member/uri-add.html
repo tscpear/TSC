@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>添加接口</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../static/home/css/oksub.css">
+</head>
+<body>
+    <div class="ok-body">
+        <!--form表单-->
+        <form class="layui-form layui-form-pane ok-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">接口</label>
+                <div class="layui-input-block">
+                    <input type="text" name="uri" placeholder="请输入接口" autocomplete="off" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">设备</label>
+                <div class="layui-input-block">
+                    <select name="device">
+                        <option value="1" selected>知轮管理后台</option>
+                        <option value="2">门店端APP</option>
+                        <option value="3">司机端小程序</option>
+                        <option value="4">司机端APP</option>
+                        <option value="5">pda端</option>
+                        <option value="6">商城管理后台</option>
+                        <option value="7">店铺管理后台</option>
+                        <option value="8">三包APP</option>
+                        <option value="9">知轮通</option>
+                        <option value="10">知轮互联</option>
+                        <option value="11">H5</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">请求方式</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="method" value="1" title="get" checked>
+                    <input type="radio" name="method" value="2" title="post" >
+                    <input type="radio" name="method" value="3" title="put" >
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">描述</label>
+                <div class="layui-input-block">
+                    <input type="text" name="mark" autocomplete="off" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">接口传参</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="uripar" lay-filter="uripar" value="0" title="无参数" checked>
+                    <input type="radio" name="uripar" lay-filter="uripar" value="1" title="固定参数" >
+                    <input type="radio" name="uripar" lay-filter="uripar" value="2" title="自动变量" >
+                    <input type="radio" name="uripar" lay-filter="uripar" value="3" title="手动变量" >
+                </div>
+            </div>
+            <div class="layui-form-item" id="urivar" style="display: none;">
+                <label class="layui-form-label">接口参数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="urivar" autocomplete="off" class="layui-input" id="urivar-test">
+                </div>
+            </div>
+            <div class="layui-form-item" >
+                <label class="layui-form-label">头传参</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="head1" lay-filter="head" value="1" title="固定参数" >
+                    <input type="checkbox" name="head2" lay-filter="head" value="2" title="自动变量" >
+                    <input type="checkbox" name="head3" lay-filter="head" value="3" title="手动变量" >
+                </div>
+            </div>
+            <div>
+            <div class="layui-form-item layui-input-inline layui-form-text" id="headvar1" style="display: none;width: 30%;">
+                <label class="layui-form-label">头固定参数</label>
+                <div class="layui-input-block">
+                    <textarea name="headtext1" id="headtext1" placeholder="请输入内容" class="layui-textarea" style="height: 300px"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-input-inline layui-form-text" id="headvar2" style="display: none;width: 30%;">
+                <label class="layui-form-label">头自动参数</label>
+                <div class="layui-input-block">
+                    <textarea name="headtext2" id="headtext2" placeholder="请输入内容" class="layui-textarea"style="height: 300px"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-input-inline layui-form-text " id="headvar3" style="display: none;width: 30%;">
+                <label class="layui-form-label">头手动参数</label>
+                <div class="layui-input-block">
+                    <textarea name="headtext3" id="headtext3" placeholder="请输入内容" class="layui-textarea" style="height: 300px"></textarea>
+                </div>
+            </div>
+            </div>
+            <div class="layui-form-item" id="webform">
+                <label class="layui-form-label">form传参</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="webform1" lay-filter="webform" value="1" title="固定参数" >
+                    <input type="checkbox" name="webform2" lay-filter="webform" value="2" title="自动变量" >
+                    <input type="checkbox" name="webform3" lay-filter="webform" value="3" title="手动变量" >
+                </div>
+            </div>
+            <div class="layui-form-item layui-input-inline layui-form-text" id="formvar1" style="display: none;width: 30%;">
+                <label class="layui-form-label">form固定参数</label>
+                <div class="layui-input-block">
+                    <textarea name="formtext1" id="formtext1" placeholder="请输入内容" class="layui-textarea" style="height: 300px"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-input-inline layui-form-text" id="formvar2" style="display: none;width: 30%;">
+                <label class="layui-form-label">form自动参数</label>
+                <div class="layui-input-block">
+                    <textarea name="formtext2" id="formtext2" placeholder="请输入内容" class="layui-textarea"style="height: 300px"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-input-inline layui-form-text " id="formvar3" style="display: none;width: 30%;">
+                <label class="layui-form-label">form自动参数</label>
+                <div class="layui-input-block">
+                    <textarea name="formtext3" id="formtext3" placeholder="请输入内容" class="layui-textarea" style="height: 300px"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item" id="json">
+                <label class="layui-form-label">json传参</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="json1" lay-filter="json" value="1" title="固定参数" >
+                    <input type="checkbox" name="json2" lay-filter="json" value="2" title="自动变量" >
+                    <input type="checkbox" name="json3" lay-filter="json" value="3" title="手动变量" >
+                </div>
+            </div>
+            <div class="layui-form-item layui-input-inline layui-form-text" id="jsonvar1" style="display: none;width: 30%;">
+                <label class="layui-form-label">json固定参数</label>
+                <div class="layui-input-block">
+                    <textarea name="jsontext1" id="jsontext1" placeholder="请输入内容" class="layui-textarea" style="height: 300px"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-input-inline layui-form-text" id="jsonvar2" style="display: none;width: 30%;">
+                <label class="layui-form-label">json自动参数</label>
+                <div class="layui-input-block">
+                    <textarea name="jsontext2" id="jsontext2" placeholder="请输入内容" class="layui-textarea"style="height: 300px"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-input-inline layui-form-text " id="jsonvar3" style="display: none;width: 30%;">
+                <label class="layui-form-label">json手动参数</label>
+                <div class="layui-input-block">
+                    <textarea name="jsontext3" id="jsontext3" placeholder="请输入内容" class="layui-textarea" style="height: 300px"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text" id="response">
+                <label class="layui-form-label">大致返回值格式</label>
+                <div class="layui-input-block">
+                    <textarea name="response" placeholder="请输入内容" class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text" id="value">
+                <label class="layui-form-label">是否需要测试用例中奖测试数据缓存起来</label>
+                <div class="layui-input-block">
+                    <textarea name="save" placeholder="请输入内容" class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="add">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--js逻辑-->
+    <script src="../../../static/home/lib/layui/layui.js"></script>
+    <script>
+        layui.use(["element", "form", "okLayer", "okUtils","jquery"], function () {
+            var form = layui.form;
+            var okLayer = layui.okLayer;
+            var okUtils = layui.okUtils;
+            var $=layui.jquery;
+            form.on("submit(add)", function (data) {
+                okUtils.ajax("/uri/add", "post", data.field, true).done(function (response) {
+                    console.log(response);
+                    okLayer.greenTickMsg("添加成功", function () {
+                        parent.layer.close(parent.layer.getFrameIndex(window.name));
+                    });
+                }).fail(function (error) {
+                    console.log(error)
+                });
+                return false;
+            });
+
+            
+            form.on("radio(uripar)",function (data) {
+                if(data.value==0 || data.value==3){
+                    $("#urivar").hide();
+                    $("#urivar-test").removeAttr("lay-verify")
+                    $("#urivar-test").val("")
+                }else {
+                    $("#urivar").show();
+                    $("#urivar-test").attr("lay-verify","required");
+                }
+            });
+            form.on("checkbox(head)",function (data) {
+                if(data.elem.value==1){
+                    if(data.elem.checked){
+                        $("#headvar1").show();
+                        $("#headtext1").attr("lay-verify","required");
+                    }else {
+                        $("#headvar1").hide();
+                        $("#headtext1").removeAttr("lay-verify");
+                        $("#headtext1").val("");
+                    }
+                }
+                if(data.elem.value==2){
+                    if(data.elem.checked){
+                        $("#headvar2").show();
+                        $("#headtext2").attr("lay-verify","required");
+                    }else {
+                        $("#headvar2").hide();
+                        $("#headtext2").removeAttr("lay-verify");
+                        $("#headtext2").val("");
+                    }
+                }if(data.elem.value==3){
+                    if(data.elem.checked){
+                        $("#headvar3").show();
+                        $("#headtext3").attr("lay-verify","required");
+                    }else {
+                        $("#headvar3").hide();
+                        $("#headtext3").removeAttr("lay-verify");
+                        $("#headtext3").val("");
+                    }
+                }
+            });
+            form.on("checkbox(json)",function (data) {
+                if(data.elem.value==1){
+                    if(data.elem.checked){
+                        $("#jsonvar1").show();
+                        $("#jsontext1").attr("lay-verify","required");
+                    }else {
+                        $("#jsonvar1").hide();
+                        $("#jsontext1").removeAttr("lay-verify");
+                        $("#jsontext1").val("");
+                    }
+                }
+                if(data.elem.value==2){
+                    if(data.elem.checked){
+                        $("#jsonvar2").show();
+                        $("#jsontext2").attr("lay-verify","required");
+                    }else {
+                        $("#jsonvar2").hide();
+                        $("#jsontext2").removeAttr("lay-verify");
+                        $("#jsontext2").val("");
+                    }
+                }if(data.elem.value==3){
+                    if(data.elem.checked){
+                        $("#jsonvar3").show();
+                        $("#jsontext3").attr("lay-verify","required");
+                    }else {
+                        $("#jsonvar3").hide();
+                        $("#jsontext3").removeAttr("lay-verify");
+                        $("#jsontext3").val("");
+                    }
+                }
+            });
+            form.on("checkbox(webform)",function (data) {
+                if(data.elem.value==1){
+                    if(data.elem.checked){
+                        $("#formvar1").show();
+                        $("#formtext1").attr("lay-verify","required");
+                    }else {
+                        $("#formvar1").hide();
+                        $("#formtext1").removeAttr("lay-verify");
+                        $("#formtext1").val("");
+                    }
+                }
+                if(data.elem.value==2){
+                    if(data.elem.checked){
+                        $("#formtext2").attr("lay-verify","required");
+                        $("#formvar2").show();
+                    }else {
+                        $("#formvar2").hide();
+                        $("#formtext2").removeAttr("lay-verify");
+                        $("#formtext2").val("");
+                    }
+                }if(data.elem.value==3){
+                    if(data.elem.checked){
+                        $("#formtext3").attr("lay-verify","required");
+                        $("#formvar3").show();
+                    }else {
+                        $("#formvar3").hide();
+                        $("#formtext3").removeAttr("lay-verify");
+                        $("#formtext3").val("");
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

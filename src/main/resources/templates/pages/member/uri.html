@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>接口管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../static/home/css/oksub.css">
+</head>
+<body>
+<div class="ok-body">
+    <!--模糊搜索区域-->
+    <div class="layui-row">
+        <form class="layui-form layui-col-md12 ok-search-form">
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <input class="layui-input" placeholder="描述" autocomplete="off" name="uriMark"></div>
+                <div class="layui-input-inline">
+                    <input class="layui-input" placeholder="uri" autocomplete="off" name="uriValue"></div>
+                <div class="layui-input-inline">
+                    <select name="device">
+                        <option value="">请选择设备</option>
+                        <option value="1">知轮管理后台</option>
+                        <option value="2">门店端APP</option>
+                        <option value="3">司机端小程序</option>
+                        <option value="4">司机端APP</option>
+                        <option value="5">pda端</option>
+                        <option value="6">商城管理后台</option>
+                        <option value="7">店铺管理后台</option>
+                        <option value="8">三包APP</option>
+                        <option value="9">知轮通</option>
+                        <option value="10">知轮互联</option>
+                        <option value="11">H5</option>
+                    </select>
+                </div>
+            <div class="layui-input-inline">
+                <button class="layui-btn" lay-submit="" lay-filter="search">
+                    <i class="layui-icon">&#xe615;</i>
+                </button>
+            </div>
+            </div>
+        </form>
+    </div>
+    <!--数据表格-->
+    <table class="layui-hide" id="tableId" lay-filter="tableFilter"></table>
+</div>
+<!--js逻辑-->
+<script src="../../../static/home/lib/layui/layui.js"></script>
+<script>
+    layui.use(["element", "table", "form", "laydate", "okLayer", "okUtils", "okMock"], function () {
+        var table = layui.table;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var okLayer = layui.okLayer;
+        var okUtils = layui.okUtils;
+        var okMock = layui.okMock;
+
+
+        var userTable = table.render({
+            elem: '#tableId',
+            url: okMock.api.listUri,
+            limit: 20,
+            page: true,
+            toolbar: true,
+            toolbar: "#toolbarTpl",
+            size: "sm",
+            cols: [[
+                {field: "uriId", title: "接口编号", width: 100, sort: true, align: "center"},
+                {field: "device", title: "设备", width: 160, templet: "#deviceTp", align: "center"},
+                {field: "uri", title: "接口路径", width: 300},
+                {field: "method", title: "请求方法", width: 100, templet: "#typeTp", align: "center"},
+                {field: "mark", title: "描述", width: 300},
+                {field: "testNum", title: "用例数量", width: 100, align: "center"},
+                {title: "操作", width: 100, align: "center", fixed: "right", templet: "#operationTpl"}
+            ]],
+            done: function (res, curr, count) {
+                console.info(res, curr, count);
+            }
+        });
+
+        form.on("submit(search)", function (data) {
+            userTable.reload({
+                where: data.field,
+                page: {curr: 1}
+            });
+            return false;
+        });
+
+        table.on("toolbar(tableFilter)", function (obj) {
+            switch (obj.event) {
+                case "batchEnabled":
+                    batchEnabled();
+                    break;
+                case "batchDisabled":
+                    batchDisabled();
+                    break;
+                case "batchDel":
+                    batchDel();
+                    break;
+                case "add":
+                    add();
+                    break;
+            }
+        });
+
+        table.on("tool(tableFilter)", function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case "edit":
+                    edit(data);
+                    break;
+                case "del":
+                    del(data.id);
+                    break;
+                case "addTest":
+                    addTest(data);
+                    break;
+            }
+        });
+
+        function add() {
+            okLayer.open("添加接口", "uri-add.html", "90%", "90%", null, function () {
+                userTable.reload();
+            })
+        }
+
+        function edit(data) {
+            okLayer.open("编辑接口", "uri-edit.html", "90%", "90%", function (layero) {
+                var iframeWin = window[layero.find("iframe")[0]["name"]];
+                iframeWin.initForm(data);
+            }, function () {
+                userTable.reload();
+            })
+        }
+
+        function del(id) {
+            okLayer.confirm("确定要删除吗？", function () {
+                okUtils.ajax("/user/deleteUser", "delete", {idsStr: id}, true).done(function (response) {
+                    console.log(response);
+                    okUtils.tableSuccessMsg(response.msg);
+                }).fail(function (error) {
+                    console.log(error)
+                });
+            })
+        }
+
+        function addTest(data) {
+            okLayer.open("添加用例", "testcase-add.html", "90%", "90%", function (layero) {
+                var iframeWin = window[layero.find("iframe")[0]["name"]];
+                iframeWin.initForm(data);
+            }, function () {
+                userTable.reload();
+            })
+        }
+    })
+</script>
+<!-- 头工具栏模板 -->
+<script type="text/html" id="toolbarTpl">
+    <div class="layui-btn-container">
+        <!--<button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="batchEnabled">批量启用</button>
+        <button class="layui-btn layui-btn-sm layui-btn-warm" lay-event="batchDisabled">批量停用</button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="batchDel">批量删除</button>-->
+        <button class="layui-btn layui-btn-sm" lay-event="add">添加接口</button>
+    </div>
+</script>
+<script type="text/html" id="operationTpl">
+    <a href="javascript:" title="添加用例" lay-event="addTest"><i class="layui-icon">&#xe654;</i></a>
+    <a href="javascript:" title="编辑" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
+    <a href="javascript:" title="删除" lay-event="del"><i class="layui-icon">&#xe640;</i></a>
+</script>
+<!--参数类型-->
+<script type="text/html" id="deviceTp">
+    {{#  if(d.device == 1){ }}
+    <span class="layui-btn layui-btn-normal layui-btn-xs">知轮管理后台</span>
+    {{#  } else if(d.device == 2) { }}
+    <span class="layui-btn layui-btn-warm layui-btn-xs">门店APP</span>
+    {{#  } else if(d.device == 3) { }}
+    <span class="layui-btn layui-btn-warm layui-btn-xs">司机端小程序</span>
+    {{#  } else if(d.device == 4) { }}
+    <span class="layui-btn layui-btn-checked layui-btn-xs">司机端APP</span>
+    {{#  } else if(d.device == 5) { }}
+    <span class="layui-btn layui-btn-warm layui-btn-xs">pdaAPP</span>
+    {{#  } else if(d.device == 6) { }}
+    <span class="layui-btn layui-btn-warm layui-btn-xs">商城管理后台</span>
+    {{#  } else if(d.device == 7) { }}
+    <span class="layui-btn layui-btn-checked layui-btn-xs">店铺管理后台</span>
+    {{#  } else if(d.device == 8) { }}
+    <span class="layui-btn layui-btn-warm layui-btn-xs">三包APP</span>
+    {{#  } else if(d.device == 9) { }}
+    <span class="layui-btn layui-btn-warm layui-btn-xs">知轮通</span>
+    {{#  } else if(d.device == 10) { }}
+    <span class="layui-btn layui-btn-checked layui-btn-xs">知轮互联</span>
+    {{#  } else if(d.device == 11) { }}
+    <span class="layui-btn layui-btn-checked layui-btn-xs">H5</span>
+    {{#  } }}
+</script>
+<script type="text/html" id="typeTp">
+    {{#  if(d.method == 1){ }}
+    <span class="layui-btn layui-btn-normal layui-btn-xs">get</span>
+    {{#  } else if(d.method == 2) { }}
+    <span class="layui-btn layui-btn-normal layui-btn-xs">post</span>
+    {{#  } else if(d.method == 3) { }}
+    <span class="layui-btn layui-btn-normal layui-btn-xs">put</span>
+    {{#  } }}
+</script>
+
+</body>
+</html>

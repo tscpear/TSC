@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chapter6.mapper.TestMapper">
+    <resultMap id="testResultMap" type="com.chapter6.model.request.RequestTestCase">
+        <result property="testCaseId" column="id"/>
+        <result property="testMark" column="mark"/>
+        <result property="uriId" column="uri_id"/>
+        <result property="method1" column="method1"/>
+        <result property="method2" column="method2"/>
+        <result property="method3" column="method3"/>
+        <result property="rely" column="rely"/>
+        <result property="apivar" column="apivar"/>
+        <result property="headvar" column="headvar"/>
+        <result property="webform" column="webform"/>
+        <result property="json" column="json"/>
+        <result property="api" column="api"/>
+        <result property="apis" column="apis"/>
+        <result property="expectOfSql" column="expect_of_sql"/>
+        <result property="sqls" column="sqls"/>
+        <result property="request" column="request"/>
+        <result property="response" column="response"/>
+        <result property="disable" column="disable"/>
+        <result property="expectOfStatus" column="expect_of_status"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <sql id="list_count">
+        <if test="uriValue != null">
+            and uri_id in (select id from uri where uri like CONCAT('%',#{uriValue},'%'))
+        </if>
+        <if test="testMark != null">
+            and mark like CONCAT('%',#{testMark},'%')
+        </if>
+        <if test="device != null">
+            and uri_id in (select id from uri where device = #{device})
+        </if>
+    </sql>
+
+    <select id="testList" resultMap="testResultMap">
+        select *
+        from testcase
+        where disable = 0
+        <include refid="list_count"/>
+        limit #{pageBegin},#{pageEnd};
+    </select>
+
+
+    <select id="getCountList" resultType="Integer">
+        select count(*) from testcase where 1=1
+        <include refid="list_count"/>;
+    </select>
+    <insert id="addTestCase">
+        insert into testcase(mark,
+                             uri_id,
+                             method1,
+                             method2,
+                             method3,
+                             rely,
+                             apivar,
+                             headvar,
+                             webform,
+                             json,
+                             api,
+                             apis,
+                             expect_of_sql,
+                             sqls,
+                             request,
+                             response,
+                             expect_of_status,
+                             status
+        )
+        value
+        (
+        #{testMark}
+        ,
+        #{uriId}
+        ,
+        #{method1}
+        ,
+        #{method2}
+        ,
+        #{method3}
+        ,
+        #{rely}
+        ,
+        #{apivar}
+        ,
+        #{headvar}
+        ,
+        #{webform}
+        ,
+        #{json}
+        ,
+        #{api}
+        ,
+        #{apis}
+        ,
+        #{expectOfSql}
+        ,
+        #{sqls}
+        ,
+        #{request}
+        ,
+        #{response}
+        ,
+        #{expectOfStatus}
+        ,
+        #{status}
+        );
+    </insert>
+    <select id="testCount" resultType="Integer">
+        select count(*)
+        from test_copy;
+    </select>
+    <delete id="deleteTest">
+        delete
+        from test_copy
+        where id = #{id};
+    </delete>
+    <update id="updateTestCase">
+        update testcase
+        set
+            mark             = #{testMark},
+            method1          = #{method1},
+            method2          = #{method2},
+            method3          = #{method3},
+            rely             = #{rely},
+            apivar           = #{apivar},
+            headvar          = #{headvar},
+            webform          = #{webform},
+            json             = #{json},
+            api              = #{api},
+            apis             = #{apis},
+            expect_of_sql    = #{expectOfSql},
+            sqls             = #{sqls},
+            request          = #{request},
+            response         = #{response},
+            expect_of_status = #{expectOfStatus},
+            status           = #{status}
+        where id = #{testCaseId}
+    </update>
+    <select id="findCountByApi" resultType="Integer">
+        select count(*)
+        from testcase
+        where uri_id = #{uriId};
+    </select>
+    <select id="findTestCaseByUriId" resultMap="testResultMap">
+        select id
+        from testcase
+        where uri_id = #{uriId}
+          and method2 = 2;
+    </select>
+    <update id="delTestCase">
+        update testcase
+        set disable = 1
+        where id = #{testCaseId};
+    </update>
+    <select id="getUriIdById" resultType="Integer">
+        select uri_id
+        from testcase
+        where id = #{testCaseId};
+    </select>
+    <select id="getTestCaseById" resultMap="testResultMap">
+        select *
+        from testcase
+        where id = #{testcaseId};
+    </select>
+</mapper>

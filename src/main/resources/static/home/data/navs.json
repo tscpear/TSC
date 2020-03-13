@@ -1,0 +1,53 @@
+[
+    {
+        "title": "首页",
+        "href": "templates/pages/console.html",
+        "icon": "&#xe68e",
+        "spread": true,
+        "isCheck": true
+    },
+    {
+        "title": "接口测试",
+        "href": "",
+        "icon": "&#xe631",
+        "spread": false,
+        "children": [
+            {
+                "title": "接口管理",
+                "href": "templates/pages/member/uri.html",
+                "fontFamily": "layui-icon",
+                "icon": "&#xe631",
+                "spread": false
+            },
+            {
+                "title": "用例管理",
+                "href": "templates/pages/member/testcase.html",
+                "icon": "&#xe631",
+                "spread": false
+            },
+            {
+                "title": "用例组列表",
+                "href": "templates/pages/member/permission.html",
+                "icon": "&#xe631",
+                "spread": false
+            }
+        ]
+    },
+    {
+        "title": "测试数据生成",
+        "href": "",
+        "icon": "&#xe631",
+        "spread": false,
+        "children": [
+            {
+                "title": "网红轮胎订单流程",
+                "href": "templates/pages/member/getDataByRedTireOrder.html",
+                "fontFamily": "layui-icon",
+                "icon": "&#xe631",
+                "spread": false
+            }
+        ]
+    }
+
+
+]

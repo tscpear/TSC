@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>添加测试用例</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../static/home/css/oksub.css">
+</head>
+<body>
+<div class="ok-body">
+    <!--form表单-->
+    <!--输入接口名称-->
+    <form class="layui-form ok-form layui-form-pane" lay-filter="filter">
+        <div class="layui-form-item layui-input-inline">
+            <label class="layui-form-label">接口编号</label>
+            <div class="layui-input-block">
+                <input type="text" name="uriId" autocomplete="off" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item layui-input-inline">
+            <label class="layui-form-label">接口</label>
+            <div class="layui-input-block">
+                <input type="text" name="uri" autocomplete="off" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">描述</label>
+            <div class="layui-input-block">
+                <input type="text" name="testMark" autocomplete="off" class="layui-input" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">类型</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="method1" lay-filter="method1" value="1" title="散装">
+                <input type="checkbox" name="method2" lay-filter="method2" value="2" title="套娃">
+                <input type="checkbox" name="method3" lay-filter="method3" value="4" title="不可逆">
+            </div>
+        </div>
+        <div class="layui-form-item" id="apiRely" style="display: none">
+            <div class="layui-form-text">
+                <label class="layui-form-label">依赖接口的测试用例</label>
+                <input type="text" name="rely" id="rely" autocomplete="off" class="layui-input" value="" disabled>
+            </div>
+            <div id="testRely">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text" id="sdbl">
+            <label class="layui-form-label">随机参数</label>
+            <div class="layui-input-inline " id="urivar" style="display: none;width: 22%;">
+                <label class="layui-form-label">api手动参数</label>
+                <div class="layui-input-block">
+                    <textarea name="apivar" id="urivartext" placeholder="请输入内容" class="layui-textarea"
+                              style="height: 300px"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">期望值类型</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="api" lay-filter="expectType" value="1" title="返回值">
+                <input type="checkbox" name="expectOfSql" lay-filter="expectType" value="2" title="数据库">
+                <input type="checkbox" name="expectOfStatus" lay-filter="expectType" value="3" title="状态码">
+            </div>
+        </div>
+        <div class="layui-form-item" id="expected">
+            <div class="layui-input-inline layui-form-text" style="display: none;width: 35%" id="api">
+                <label class="layui-form-label">输入需要校验的返回值</label>
+                <textarea name="apis" id="apis" placeholder="请输入内容" class="layui-textarea"
+                          style="height: 300px"></textarea>
+            </div>
+            <div class="layui-input-inline layui-form-text" style="display: none;width: 35%" id="expectOfSql">
+                <label class="layui-form-label">输入需要要校验的sql</label>
+                <textarea name="sqls" id="sqls" placeholder="请输入内容" class="layui-textarea"
+                          style="height: 300px"></textarea>
+            </div>
+            <div class="layui-input-inline layui-form-text"  style="display: none;width: 25%" id="expectOfStatus">
+                <label class="layui-form-label">状态码</label>
+                <div class="layui-input-block">
+                    <select name="status" id="status">
+                        <option value="200" selected>200</option>
+                        <option value="400">400</option>
+                        <option value="403">403</option>
+                        <option value="406">406</option>
+                        <option value="500">500</option>
+                        <option value="502">502</option>
+                        <option value="503">503</option>
+                        <option value="304">304</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="edit">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--js逻辑-->
+<script src="../../../static/home/lib/layui/layui.js"></script>
+<script>
+    var initData;
+
+    function initForm(data) {
+        var jsonString = JSON.stringify(data);
+        initData = JSON.parse(jsonString);
+    }
+
+    layui.use(["element", "form", "okLayer", "okUtils", "jquery"], function () {
+        var form = layui.form;
+        var okLayer = layui.okLayer;
+        var okUtils = layui.okUtils;
+        var $ = layui.jquery;
+        var relySlectId = 0;
+
+        form.val("filter", initData);
+
+        //手动变量
+        if (initData.uripar == 3) {
+            $('#urivar').show();
+            $('#urivartext').attr("lay-verify", "required");
+        }
+        sdbl(initData.head3, initData.headtext3, "headvar");
+        sdbl(initData.webform3, initData.formtext3, "webform");
+        sdbl(initData.json3, initData.jsontext3, "json");
+        //  测试依赖
+        if (initData.uripar == 2 || initData.head2 == 2 || initData.webform2 == 2 || initData.json2 == 2) {
+            var i = false;
+            var apiRely = JSON.parse(initData.byRely);
+            $.each(apiRely, function (key) {
+                console.log(i);
+                if (key.split(".")[0] != 0) {
+                    i = true;
+                    console.log(i);
+                    if(i){
+                        $('#apiRely').show();
+                    }
+                    relySlectId++;
+                    var list = apiRely[key];
+                    $("#testRely").append(
+                        "<div class=\"layui-input-inline layui-form-text\">\n" +
+                        "                <label class=\"layui-form-label\">" + key + "</label>\n" +
+                        "                <div class=\"layui-input-block\">\n" +
+                        "                    <select lay-filter=\"rely\" id=\"" + relySlectId + "\">\n" +
+                        "                        <option value=\"0\"></option>\n" +
+                        "                    </select>\n" +
+                        "                </div>\n" +
+                        "            </div>"
+                    )
+                    if (list.length > 0) {
+                        for (var i = 0; i < list.length; i++) {
+                            $("#" + relySlectId + "").append("<option value=\"" + list[i] + "\">" + list[i] + "</option>");
+
+                        }
+                    } else {
+                        $("#" + relySlectId + "").append("<option value='0' disabled>\"当前接口没有可用测试用例;\"</option>");
+                    }
+
+                }
+            });
+        } else {
+            $('#apiRely').hide();
+        }
+
+        form.on("checkbox(expectType)", function (data) {
+            console.log(data.elem.value);
+            if (data.elem.value == 1) {
+                showByCheckBox(data.elem.checked, "api", "apis");
+            }
+            if (data.elem.value == 2) {
+                showByCheckBox(data.elem.checked, "expectOfSql", "sqls");
+            }
+            if(data.elem.value==3){
+                showByCheckBox(data.elem.checked, "expectOfStatus", "status");
+            }
+        });
+
+
+        form.on("submit(edit)", function (data) {
+            okUtils.ajax("/test/add", "post", data.field, true).done(function (response) {
+                console.log(response);
+                okLayer.greenTickMsg("编辑成功", function () {
+                    parent.layer.close(parent.layer.getFrameIndex(window.name));
+                });
+            }).fail(function (error) {
+                console.log(error)
+            });
+            return false;
+        });
+
+        form.on('select(rely)', function (data) {
+            var value = data.value;
+            var rely = "";
+            for (var i = 1; i < relySlectId + 1; i++) {
+                if ($("#" + i + "").val() > 0) {
+                    rely = rely + $("#" + i + "").val() + ",";
+                }
+                console.log(rely);
+            }
+            $('#rely').val(rely);
+        });
+
+        form.render();
+
+        //方法区
+
+        //自动参数
+        function sdbl(a, b, type) {
+            if (a == 3) {
+                var text = JSON.parse(b);
+                var name = "";
+                $.each(text, function (key) {
+                    name = name + key + ",";
+                });
+                name = name.substr(0, name.length - 1);
+                var arr = name.split(",");
+                var labelName;
+                if (type == "json") {
+                    labelName = "json:" + arr;
+                } else if (type == "webform") {
+                    labelName = "form:" + arr;
+                } else {
+                    labelName = "head:" + arr
+                }
+                $('#sdbl').append(
+                    "<div class=\"layui-input-inline layui-form-text\" id=\"" + type + "\" style=\"width: 22%;\">\n" +
+                    "                <label class=\"layui-form-label\">" + labelName + "</label>\n" +
+                    "                <div class=\"layui-input-block\">\n" +
+                    "                    <textarea name=\"" + type + "\" placeholder=\"请输入内容\" class=\"layui-textarea\" style=\"height: 300px\" lay-verify=\"required\"></textarea>\n" +
+                    "                </div>\n" +
+                    "            </div>"
+                );
+
+            }
+        }
+
+        //通过复选框，决定展示不展示,同时清空value，移除必填的属性
+        function showByCheckBox(b, showId, showTextId) {
+            if (b) {
+                $("#" + showId + "").show();
+                $("#" + showTextId + "").attr("lay-verify", "required");
+            } else {
+                $("#" + showId + "").hide();
+                $("#" + showTextId + "").removeAttr("lay-verify");
+                $("#" + showTextId + "").val("");
+            }
+        }
+    })
+</script>
+<script src="../../../static/home/lib/wangEditor/release/wangEditor.min.js"></script>
+</body>
+</html>

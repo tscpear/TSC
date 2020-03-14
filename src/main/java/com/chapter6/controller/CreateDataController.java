@@ -20,11 +20,11 @@ public class CreateDataController {
     @ResponseBody
     public JSONObject deleteTestCase(CreateData createData) {
         if(createData.getOrderType()==1){
-            return responseJson.getMsg("门店网红订单");
+            return responseJson.getMsg("门店网红订单",0);
         }
         if(createData.getOrderType()==2){
-            return  responseJson.getMsg("司机网红订单");
+            return  responseJson.getMsg("司机网红订单",0);
         }
-        return responseJson.getMsg("哦好急哦");
+        return responseJson.getMsg("哦好急哦",0);
     }
 }

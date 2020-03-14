@@ -32,11 +32,13 @@
             </div>
         </div>
         <div class="layui-form-item" id="testList">
-            <!--<label class="layui-form-label">用例</label>
-            <div class="layui-input-inline" style="width: 35%">
-                <label class="layui-form-label">接口</label>
-                <div class="layui-input-block">
-                    <input type="text" name="uri" autocomplete="off" class="layui-input" disabled>
+            <!--<div class="layui-input-inline">
+                <label class="layui-form-label">用例</label>
+                <div class="layui-input-inline" style="width: 35%">
+                    <label class="layui-form-label">接口</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="uri" autocomplete="off" class="layui-input" disabled>
+                    </div>
                 </div>
             </div>
             <div class="layui-input-inline" style="width: 55%">
@@ -45,12 +47,13 @@
                     <input type="text" name="testMark" autocomplete="off" class="layui-input"
                            disabled>
                 </div>
-            </div>-->
+            </div>
+            <div class="layui-input-inline" id="testId"></div>-->
         </div>
 
 
         <!-- 账号输入区域-->
-        <div  id="userAndPassword">
+        <div id="userAndPassword">
             <!--<div>
                 <div class="layui-input-inline" style="width: 25%">
                     <label class="layui-form-label">账号</label>
@@ -88,6 +91,7 @@
             </div>-->
         </div>
 
+
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class="layui-btn" lay-submit lay-filter="doTest">执行用例</button>
@@ -124,12 +128,12 @@
             var layer = layui.layer;
 
             //放测试用例的信息
-            if (testNum > 1) {
+            if (testNum > 0) {
+
                 for (var i = 0; i < testNum; i++) {
                     testIdGroupList[i] = testListData[i].testCaseId;
-                    console.log(i);
                     $("#testList").append(
-                        "<div class=\"layui-form-item\" id=\"testId"+testListData[i].testCaseId+"\">" +
+                        "<div class=\"layui-form-item\">" +
                         "<label class=\"layui-form-label\">用例" + testListData[i].testCaseId + "</label>\n" +
                         "            <div class=\"layui-input-inline\" style=\"width: 30%\">\n" +
                         "                <label class=\"layui-form-label\">接口</label>\n" +
@@ -144,6 +148,7 @@
                         "                           disabled value=\"" + testListData[i].testMark + "\">\n" +
                         "                </div>\n" +
                         "            </div>" +
+                            "<div id=\"testId"+testListData[i].testCaseId+"\"></div>"+
                         "</div>"
                     )
                 }
@@ -225,28 +230,50 @@
             });
 
             form.on("submit(doTest)", function (data) {
-                console.log(data);
+
+                form.render();
+                var loadIndex;
                 $.ajax({
                     url: "/dotest/group",
                     data: data.field,
                     type: "post",
                     dataType: "json",
+                    beforeSend: function () {
+                        loadIndex = layer.load(0, {shade: 0.3});
+                    },
                     success: function (response) {
-                        var value = response.data;
-                        for(var i = 0;i<value.length;i++){
-                            var valueJson = value[i];
-                            if(valueJson[1]=="true"){
-                                $("testId"+valueJson[2]+"").append(
-                                    "<i class=\"layui-icon layui-icon-face-smile\" style=\"font-size: 20px; color:green\" ></i>"
-                                );
-                            }else{
-                                $("testId"+valueJson[2]+"").append(
-                                    "<i class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 20px; color:green\"></i>"
-                                );
+                        if (response.code == 0) {
+                            var value = response.data;
+                            for (var i in value) {
+                                var valueJson = value[i];
+                                var testId = "testId" + valueJson[0];
+                                if (valueJson[1] == "true") {
+                                    $("#" + testId + "").html( "<div></div>");
+                                    $("#" + testId + "").append(
+                                        "<div class=\"layui-input-inline\">" +
+                                        "<i class=\"layui-icon layui-icon-face-smile\" style=\"font-size: 30px; color:green\" ></i>" +
+                                        "</div>"
+                                    );
+                                } else {
+                                    $("#" + testId + "").html(
+                                        "<div></div>"
+                                    );
+                                    $("#" + testId + "").append(
+                                        "<i class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 30px; color:red\"></i>"
+                                    );
+                                }
                             }
+                        } else {
+                            layer.msg(response.msg);
                         }
 
-                    }
+                    },
+                    complete: function () {
+
+                            layer.close(loadIndex);
+
+                    },
+
                 });
                 return false;
             });

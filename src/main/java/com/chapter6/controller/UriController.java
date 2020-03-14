@@ -105,7 +105,7 @@ public class UriController {
     @ResponseBody
     public JSONObject delUri(int uriId) {
         uriMapper.delUri(uriId);
-        return responseJson.getMsg("删除成功");
+        return responseJson.getMsg("删除成功",0);
     }
 
     /**

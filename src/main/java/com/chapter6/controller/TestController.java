@@ -115,7 +115,7 @@ public class TestController {
     @ResponseBody
     public JSONObject deleteTestCase(int testCaseId) {
         testMapper.delTestCase(testCaseId);
-        return responseJson.getMsg("删除成功");
+        return responseJson.getMsg("删除成功",0);
     }
 
     @PostMapping("update")

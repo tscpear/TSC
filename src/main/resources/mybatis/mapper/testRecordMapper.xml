@@ -91,7 +91,7 @@
         where record_id = #{recordId};
     </select>
     <select id="getStatusByRelyTestcaseId" resultType="java.lang.String">
-        select status_expect from test_record where testcase_id = #{relyTestId} and record_id = #{recordId};
+        select status_expect from test_record where testcase_id = #{relyTestcaseId} and record_id = #{recordId};
     </select>
 
 </mapper>

@@ -168,6 +168,6 @@
         where id = #{testcaseId};
     </select>
     <select id="getRelyByTestcaseId" resultType="java.lang.String">
-        select rely from test_case where testcase_id = #{testcaseId};
+        select rely from testcase where id = #{testcaseId};
     </select>
 </mapper>

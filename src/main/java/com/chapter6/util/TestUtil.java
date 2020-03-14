@@ -187,13 +187,17 @@ public class TestUtil {
     /**
      * 测试用例组的查询
      */
-    public void doGroupTest(RequestDoTest doTest, Long record) throws Throwable {
+    public String doGroupTest(RequestDoTest doTest, Long record) throws Throwable {
 
         //测试用例id组list
         String testIdGroup = doTest.getTestIdGroup();
 
 
         String[] testIdList = testIdGroup.split(",");
+        String msg = sortTestIdList(testIdList).get("msg").toString();
+        if(!"true".equals(msg)){
+            return msg;
+        }
 
         //创建给登入接口要用的dodata 取第一个测试用例的数据就好了
         RequestDoTest loginDoTest = doTest;
@@ -225,7 +229,7 @@ public class TestUtil {
             data.setRequestRecordTest(requestRecordTest);
             String rely = data.getTestCase().getRely();
             Map<String, String> response = new HashMap<>();
-            if (rely == null || rely =="") {
+            if (rely == null || rely.equals("")) {
                 response = apiUtil.getResponse(data, token);
             } else {
                 boolean relyTrue = true;
@@ -280,6 +284,7 @@ public class TestUtil {
             System.out.println(responseValueString);
 
         }
+        return "true";
 
 
     }
@@ -299,7 +304,7 @@ public class TestUtil {
             String rely = testMapper.getRelyByTestcaseId(testid);
 
             //看一下依赖是不是都是存在的
-            if (rely != null|| rely =="") {
+            if (rely != null && !rely.equals("")) {
                 String[] relyList = rely.split(",");
                 for (String relyId : relyList) {
                     if (!testIds.contains(Integer.parseInt(relyId))) {
@@ -310,8 +315,8 @@ public class TestUtil {
                 }
             }
         }
-
-        return null;
+        map.put("msg","true");
+        return  map;
     }
 
 

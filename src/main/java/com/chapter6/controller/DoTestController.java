@@ -63,19 +63,24 @@ public class DoTestController {
     @ResponseBody
     public JSONObject group(RequestDoTest doTest) throws Throwable {
         long recordId = System.currentTimeMillis();
-        testUtil.doGroupTest(doTest,recordId);
-        List<RequestRecordTest> recordTestList = testRecordMapper.getTestRecordByRecord(recordId);
-        JSONArray array = new JSONArray();
-        for(RequestRecordTest recordTest : recordTestList){
-            if(recordTest.getTestcaseId()!=0){
-               JSONArray obj = new JSONArray();
-               obj.add(0,recordTest.getTestcaseId());
-               obj.add(1,recordTest.getStatusExpect());
-                array.add(obj);
+        String msg = testUtil.doGroupTest(doTest,recordId);
+        if("true".equals(msg)){
+            List<RequestRecordTest> recordTestList = testRecordMapper.getTestRecordByRecord(recordId);
+            JSONArray array = new JSONArray();
+            for(RequestRecordTest recordTest : recordTestList){
+                if(recordTest.getTestcaseId()!=0){
+                    JSONArray obj = new JSONArray();
+                    obj.add(0,recordTest.getTestcaseId());
+                    obj.add(1,recordTest.getStatusExpect());
+                    array.add(obj);
+                }
+
             }
 
+            return responseJson.findList(array,0);
+        }else{
+            return responseJson.getMsg(msg,1);
         }
 
-        return responseJson.findList(array,0);
     }
 }

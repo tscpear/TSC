@@ -32,10 +32,10 @@ public class ResponseJson {
     /**
      * 传递msg
      */
-    public JSONObject getMsg(String msg){
+    public JSONObject getMsg(String msg,int code){
         JSONObject response = new JSONObject();
         response.put("msg",msg);
-        response.put("code",0);
+        response.put("code",code);
         response.put("data","");
         return response;
     }

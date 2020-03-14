@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -222,8 +223,23 @@ public class TestUtil {
 
             ApiUtilData data = apiUtil.getData(doTest);
             data.setRequestRecordTest(requestRecordTest);
-
-            Map<String, String> response = apiUtil.getResponse(data, token);
+            String rely = data.getTestCase().getRely();
+            Map<String, String> response = new HashMap<>();
+            if (rely == null || rely =="") {
+                response = apiUtil.getResponse(data, token);
+            } else {
+                boolean relyTrue = true;
+                String[] relyList = rely.split(",");
+                for (String relyId : relyList) {
+                    String status = testRecordMapper.getStatusByRelyTestcaseId(Integer.parseInt(rely), record);
+                    if (!status.equals("true")) {
+                        relyTrue = false;
+                    }
+                }
+                if (relyTrue) {
+                    response = apiUtil.getResponse(data, token);
+                }
+            }
             String responseValueString = apiUtil.getResult(response);
 
             //期望值的验证
@@ -283,16 +299,13 @@ public class TestUtil {
             String rely = testMapper.getRelyByTestcaseId(testid);
 
             //看一下依赖是不是都是存在的
-            if (rely != null) {
-                if (rely.contains(",")) {
-                    String[] relyList = rely.split(",");
-                    for (String relyId : relyList) {
-                        if (!testIds.contains(Integer.parseInt(relyId))) {
-                            String msg = "测试用例" + testid + "的依赖用例" + relyId + "不存在！";
-                            map.put("msg", msg);
-                            return map;
-                        }
-
+            if (rely != null|| rely =="") {
+                String[] relyList = rely.split(",");
+                for (String relyId : relyList) {
+                    if (!testIds.contains(Integer.parseInt(relyId))) {
+                        String msg = "测试用例" + testid + "的依赖用例" + relyId + "不存在！";
+                        map.put("msg", msg);
+                        return map;
                     }
                 }
             }

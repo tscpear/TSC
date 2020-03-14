@@ -30,33 +30,32 @@
                                  uri_id,
                                  response_value_expect,
                                  sql_expect,
-                                 status_expect
-        )
-        value
-        (
-        #{recordId}
-        ,
-        #{value}
-        ,
-        #{testcaseId}
-        ,
-        #{request}
-        ,
-        #{response}
-        ,
-        #{result}
-        ,
-        #{logs}
-        ,
-        #{userGroupId}
-        ,
-        #{uriId}
-        ,
-        #{responseValueExpect}
-        ,
-        #{sqlExpect}
-        ,
-        #{statusExpect}
+                                 status_expect)
+            value
+            (
+            #{recordId}
+            ,
+            #{value}
+            ,
+            #{testcaseId}
+            ,
+            #{request}
+            ,
+            #{response}
+            ,
+            #{result}
+            ,
+            #{logs}
+            ,
+            #{userGroupId}
+            ,
+            #{uriId}
+            ,
+            #{responseValueExpect}
+            ,
+            #{sqlExpect}
+            ,
+            #{statusExpect}
         );
     </insert>
     <select id="getSaveValue" resultType="java.lang.String">
@@ -85,6 +84,14 @@
         where record_id = #{recordId}
           and user_group_id = #{userGroupId}
           and testcase_id = #{testcaseId}
+    </select>
+    <select id="getTestRecordByRecord" resultMap="recordResultMap">
+        select testcase_id, status_expect
+        from test_record
+        where record_id = #{recordId};
+    </select>
+    <select id="getStatusByRelyTestcaseId" resultType="java.lang.String">
+        select status_expect from test_record where testcase_id = #{relyTestId} and record_id = #{recordId};
     </select>
 
 </mapper>

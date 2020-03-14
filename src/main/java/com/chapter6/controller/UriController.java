@@ -48,7 +48,7 @@ public class UriController {
         param.setUriValue(uriValue);
         param.setUriMark(uriMark);
         param.setDevice(device);
-        List<RequestUri> uriList = uriMapper.uriList(param);
+            List<RequestUri> uriList = uriMapper.uriList(param);
         JSONArray array = new JSONArray();
         for (RequestUri uri : uriList) {
             ResponseUri responseUri = new ResponseUri();

@@ -2,6 +2,7 @@ package com.chapter6.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.chapter6.baseController.ResponseJson;
@@ -61,10 +62,20 @@ public class DoTestController {
     @PostMapping("/group")
     @ResponseBody
     public JSONObject group(RequestDoTest doTest) throws Throwable {
-        long record = System.currentTimeMillis();
-        testUtil.doGroupTest(doTest,record);
+        long recordId = System.currentTimeMillis();
+        testUtil.doGroupTest(doTest,recordId);
+        List<RequestRecordTest> recordTestList = testRecordMapper.getTestRecordByRecord(recordId);
+        JSONArray array = new JSONArray();
+        for(RequestRecordTest recordTest : recordTestList){
+            if(recordTest.getTestcaseId()!=0){
+               JSONArray obj = new JSONArray();
+               obj.add(0,recordTest.getTestcaseId());
+               obj.add(1,recordTest.getStatusExpect());
+                array.add(obj);
+            }
 
+        }
 
-        return responseJson.getMsg("ssss");
+        return responseJson.findList(array,0);
     }
 }

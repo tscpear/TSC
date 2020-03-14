@@ -50,7 +50,7 @@
 
 
         <!-- 账号输入区域-->
-        <div class="layui-form-item" id="userAndPassword">
+        <div  id="userAndPassword">
             <!--<div>
                 <div class="layui-input-inline" style="width: 25%">
                     <label class="layui-form-label">账号</label>
@@ -129,20 +129,22 @@
                     testIdGroupList[i] = testListData[i].testCaseId;
                     console.log(i);
                     $("#testList").append(
+                        "<div class=\"layui-form-item\" id=\"testId"+testListData[i].testCaseId+"\">" +
                         "<label class=\"layui-form-label\">用例" + testListData[i].testCaseId + "</label>\n" +
-                        "            <div class=\"layui-input-inline\" style=\"width: 35%\">\n" +
+                        "            <div class=\"layui-input-inline\" style=\"width: 30%\">\n" +
                         "                <label class=\"layui-form-label\">接口</label>\n" +
                         "                <div class=\"layui-input-block\">\n" +
                         "                    <input type=\"text\" autocomplete=\"off\" class=\"layui-input\" disabled value=\"" + testListData[i].uri + "\">\n" +
                         "                </div>\n" +
                         "            </div>\n" +
-                        "            <div class=\"layui-input-inline\" style=\"width: 55%\">\n" +
+                        "            <div class=\"layui-input-inline\" style=\"width: 40%\">\n" +
                         "                <label class=\"layui-form-label\">描述</label>\n" +
                         "                <div class=\"layui-input-block\">\n" +
                         "                    <input type=\"text\" autocomplete=\"off\" class=\"layui-input\"\n" +
                         "                           disabled value=\"" + testListData[i].testMark + "\">\n" +
                         "                </div>\n" +
-                        "            </div>"
+                        "            </div>" +
+                        "</div>"
                     )
                 }
             }
@@ -230,33 +232,20 @@
                     type: "post",
                     dataType: "json",
                     success: function (response) {
-                        var value = response.data.responseValue.toString();
-                        $("#response").append(
-                            "<label class=\"layui-form-label\">返回值</label>\n" +
-                            "                <div class=\"layui-input-block\">\n" +
-                            "                    <textarea  placeholder=\"请输入内容\" class=\"layui-textarea\" id='ttt'></textarea>\n" +
-                            "                </div>"
-                        );
-                        $("#ttt").val(value);
-                        $("#ttt").height($("#ttt")[0].scrollHeight);
-                        $("#ttt").on("keyup keydown", function () {
-                            $(this).height(this.scrollHeight);
-                        });
-
-                        var expect = response.data.statusExpect.toString();
-                        var expectObject = JSON.parse(expect);
-                        if (expect.length > 0) {
-
-                            if (expect == "true") {
-                                $("#statusExpect").append(
-                                    "<i class=\"layui-icon layui-icon-face-smile\" style=\"font-size: 30px; color:green; text-align: center\" >测试通过</i>"
+                        var value = response.data;
+                        for(var i = 0;i<value.length;i++){
+                            var valueJson = value[i];
+                            if(valueJson[1]=="true"){
+                                $("testId"+valueJson[2]+"").append(
+                                    "<i class=\"layui-icon layui-icon-face-smile\" style=\"font-size: 20px; color:green\" ></i>"
                                 );
-                            } else {
-                                $("#statusExpect").append(
-                                    "<i class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 30px; color:green;\">状态码：期望值：" + expectObject.get("expected") + ",实际值：" + expectObject.get("result") + "</i>"
+                            }else{
+                                $("testId"+valueJson[2]+"").append(
+                                    "<i class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 20px; color:green\"></i>"
                                 );
                             }
                         }
+
                     }
                 });
                 return false;

@@ -4,6 +4,8 @@ import com.chapter6.model.request.RequestRecordTest;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Mapper
 @Repository
 public interface TestRecordMapper {
@@ -33,5 +35,12 @@ public interface TestRecordMapper {
      * 通过uriId+userGroupId+groupId 获取整个测试记录
      */
     RequestRecordTest getTestRecord(RequestRecordTest requestRecordTest);
-
+    /**
+     * 通过record 查询testId 、期望值
+     */
+    List<RequestRecordTest> getTestRecordByRecord(long recordId);
+    /**
+     * 获取状态码的结果
+     */
+    String getStatusByRelyTestcaseId(Integer relyTestcaseId,long recordId);
 }

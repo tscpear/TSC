@@ -8,8 +8,10 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.chapter6.baseController.ResponseJson;
 import com.chapter6.mapper.TestRecordMapper;
 import com.chapter6.model.request.RequestDoTest;
+import com.chapter6.model.request.RequestGetCode;
 import com.chapter6.model.request.RequestRecordTest;
 import com.chapter6.model.response.ResponseRecordTest;
+import com.chapter6.util.ApiUtil;
 import com.chapter6.util.TestUtil;
 import com.chapter6.util.Verification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,9 @@ public class DoTestController {
 
 
         List<Long> list = testUtil.doTestOnce(doTest);
+        if(list.size()<2){
+            return responseJson.getMsg(list.get(0).toString(),1);
+        }
 
 
         requestRecordTest.setRecordId(list.get(0));
@@ -87,9 +92,11 @@ public class DoTestController {
         }
 
     }
-    @PostMapping("getCode")
-    @ResponseBody
-    public JSONObject getCode(){
 
+    @PostMapping("/getCode")
+    @ResponseBody
+    public JSONObject getCode(RequestGetCode requestGetCode) throws Throwable {
+        Map<String,String> response = testUtil.getCode(requestGetCode.getAccountName(),requestGetCode.getEnvironment());
+        return responseJson.getMsg("成功",0);
     }
 }

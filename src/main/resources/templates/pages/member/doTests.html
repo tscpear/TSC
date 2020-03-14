@@ -317,7 +317,7 @@
                     btn: ['确定', '取消'],
                     yes: function (index) {
                         $.ajax({
-                            url: "/doTest",
+                            url: "/dotest/getCode",
                             data: {'accountName': telephone, 'environment': environment},
                             type: "Post",
                             dataType: "json",

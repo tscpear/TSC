@@ -313,6 +313,7 @@ public class ApiUtil {
                     ext.set(p, value);
                 }
             }
+            System.out.println("尼玛"+ext.jsonString());
             return ext.jsonString();
         }
         return null;
@@ -338,7 +339,7 @@ public class ApiUtil {
             post.setHeader(key, headObj.get(key).toString());
         }
 
-        System.err.println(post.getAllHeaders().toString());
+            System.err.println(post.getAllHeaders().toString());
 
         //放入请求提系信息
         JSONObject form = getBobyOfForm(apiUtilData);
@@ -360,9 +361,11 @@ public class ApiUtil {
                 apiUtilData.getUri().getJson2() +
                 apiUtilData.getUri().getJson3() > 0) {
             StringEntity entity = new StringEntity(getBobyOfJson(apiUtilData), "utf-8");
+            System.err.println("你他妈的" + entity.toString());
             post.setEntity(entity);
         }
-        System.out.println(post.toString());
+
+
         Header[] headers = post.getAllHeaders();
         for (Header header : headers) {
             System.out.println(header.getName() + ":" + header.getValue());

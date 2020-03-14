@@ -60,7 +60,6 @@ public class TestUtil {
         );
 
 
-
         //获取登入接口的数据
         RequestUri loginUri = uriMapper.getUriById(0);
 
@@ -74,7 +73,7 @@ public class TestUtil {
         } else {
             webformOfTest.put("grant_type", "sms_code");
             if (data.getDoTest().getCodeword().equals("8888")) {
-                getCode(data.getDoTest().getStoreAccount(),environment);
+                getCode(data.getDoTest().getStoreAccount(), environment);
             }
             webformOfTest.put("smsCode", DigestUtils.md5DigestAsHex(
                     data.getDoTest().getCodeword().getBytes()));
@@ -91,36 +90,46 @@ public class TestUtil {
 
         Map<String, String> response = apiUtil.getResponse(loginData, apiUtil.getLoginBasic(data));
         /*发送请求*/
-        JSONObject result = verification.stringToJsonObject(
-                apiUtil.getResult(response)
-        );
+
+        if (apiUtil.getStatus(response).equals("200")) {
+            JSONObject result = verification.stringToJsonObject(
+                    apiUtil.getResult(response)
+            );
 
 
-        requestRecordTest.setResult(1);
-        requestRecordTest.setResponse(result.toString());
-        JSONObject saves = new JSONObject();
-        saves.put("userId", result.get("userId").toString());
-        saves.put("userType", result.get("userType").toString());
-        requestRecordTest.setValue(saves.toString());
+            requestRecordTest.setResult(1);
+            requestRecordTest.setResponse(result.toString());
+            JSONObject saves = new JSONObject();
+            saves.put("userId", result.get("userId").toString());
+            saves.put("userType", result.get("userType").toString());
+            requestRecordTest.setValue(saves.toString());
 
 
-        String tokenAndUserGroupId = result.getString("access_token") + "," + userGroupId;
-        if (result.has("access_token")) {
+            String tokenAndUserGroupId = result.getString("access_token") + "," + userGroupId;
+            if (result.has("access_token")) {
 
+            }
+
+            testRecordMapper.insert(requestRecordTest);
+
+            return tokenAndUserGroupId;
+        } else {
+            return apiUtil.getStatus(response);
         }
 
-        testRecordMapper.insert(requestRecordTest);
-
-        return tokenAndUserGroupId;
     }
 
     /**
      * 执行但接口执行一次用例
      */
     public List<Long> doTestOnce(RequestDoTest doTest) throws Throwable {
+        List<Long> list = new ArrayList<>();
         long record = System.currentTimeMillis();
         ApiUtilData data = apiUtil.getData(doTest);
         String tokenAndUserGroupId = getToken(data, record);
+        if (tokenAndUserGroupId.length() < 4) {
+            list.add(Long.parseLong(tokenAndUserGroupId));
+        }
 
         //获取token
         String token = "bearer " + tokenAndUserGroupId.split(",")[0];
@@ -182,7 +191,6 @@ public class TestUtil {
 
 
         System.out.println(responseValueString);
-        List<Long> list = new ArrayList<>();
         list.add(data.getRequestRecordTest().getRecordId());
         list.add(data.getRequestRecordTest().getUserGroupId());
         return list;
@@ -199,7 +207,7 @@ public class TestUtil {
 
         String[] testIdList = testIdGroup.split(",");
         String msg = sortTestIdList(testIdList).get("msg").toString();
-        if(!"true".equals(sortTestIdList(testIdList).get("msg").toString())){
+        if (!"true".equals(sortTestIdList(testIdList).get("msg").toString())) {
             return sortTestIdList(testIdList).get("msg").toString();
         }
 
@@ -211,6 +219,9 @@ public class TestUtil {
         ApiUtilData loginData = apiUtil.getData(loginDoTest);
 
         String tokenAndUserGroupId = getToken(loginData, record);
+        if(tokenAndUserGroupId.length()<4){
+            return tokenAndUserGroupId;
+        }
 
         //获取token
         String token = "bearer " + tokenAndUserGroupId.split(",")[0];
@@ -308,7 +319,7 @@ public class TestUtil {
             String rely = testMapper.getRelyByTestcaseId(testid);
 
             //看一下依赖是不是都是存在的
-            if (rely != null|| rely.equals("")) {
+            if (rely != null || rely.equals("")) {
                 String[] relyList = rely.split(",");
                 for (String relyId : relyList) {
                     if (!testIds.contains(Integer.parseInt(relyId))) {
@@ -319,38 +330,35 @@ public class TestUtil {
                 }
             }
         }
-        map.put("msg","true");
-        return  map;
+        map.put("msg", "true");
+        return map;
     }
 
 
     /**
      * 请求获取验证码的接口
      */
-    public void getCode(String telephone,int environment) throws Throwable {
+    public  Map<String, String> getCode(String telephone, int environment) throws Throwable {
 
         //创建一个新的数据集合
         ApiUtilData getCodeData = new ApiUtilData();
         //创建一个新的  登入专用的dotest数据集合
         RequestDoTest getCodeDoTest = new RequestDoTest();
         //存入环境
-        getCodeDoTest.setEnvironment(environment
-        );
-
+        getCodeDoTest.setEnvironment(environment);
 
 
         //获取获取验证码接口的数据
         RequestUri getCodeUri = uriMapper.getUriById(1);
         JSONObject json = verification.stringToJsonObject(getCodeUri.getJsontext1());
-        json.put("mobile",telephone);
+        json.put("mobile", telephone);
         getCodeUri.setJsontext1(json.toString());
         RequestTestCase getCodeTestcase = testMapper.getTestCaseById(1);
 
         getCodeData.setUri(getCodeUri);
         getCodeData.setDoTest(getCodeDoTest);
         getCodeData.setTestCase(getCodeTestcase);
-        Map<String,String> map = apiUtil.getResponse(getCodeData,"0");
-        System.out.println(apiUtil.getResult(map));
+        return  apiUtil.getResponse(getCodeData, "0");
     }
 
 

@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class RequestGetCode {
-    private String telephone;
+    private String accountName;
     private Integer environment;
 }

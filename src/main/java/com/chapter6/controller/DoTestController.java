@@ -42,7 +42,11 @@ public class DoTestController {
         JSONObject obj = new JSONObject();
         RequestRecordTest requestRecordTest = new RequestRecordTest();
         requestRecordTest.setTestcaseId(doTest.getTestCaseId());
+
+
         List<Long> list = testUtil.doTestOnce(doTest);
+
+
         requestRecordTest.setRecordId(list.get(0));
         requestRecordTest.setUserGroupId(list.get(1));
         RequestRecordTest record = testRecordMapper.getTestRecord(requestRecordTest);

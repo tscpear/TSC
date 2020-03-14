@@ -195,8 +195,8 @@ public class TestUtil {
 
         String[] testIdList = testIdGroup.split(",");
         String msg = sortTestIdList(testIdList).get("msg").toString();
-        if(!"true".equals(msg)){
-            return msg;
+        if(!"true".equals(sortTestIdList(testIdList).get("msg").toString())){
+            return sortTestIdList(testIdList).get("msg").toString();
         }
 
         //创建给登入接口要用的dodata 取第一个测试用例的数据就好了
@@ -304,7 +304,7 @@ public class TestUtil {
             String rely = testMapper.getRelyByTestcaseId(testid);
 
             //看一下依赖是不是都是存在的
-            if (rely != null && !rely.equals("")) {
+            if (rely != null|| rely.equals("")) {
                 String[] relyList = rely.split(",");
                 for (String relyId : relyList) {
                     if (!testIds.contains(Integer.parseInt(relyId))) {

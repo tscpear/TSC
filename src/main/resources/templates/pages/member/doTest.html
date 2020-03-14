@@ -212,9 +212,20 @@
                             data: {'accountName': telephone, 'environment': environment},
                             type: "Post",
                             dataType: "json",
+                            beforeSend: function () {
+                                loadIndex = layer.load(0, {shade: 0.3});
+                            },
+                            success: function (response) {
+                               layer.msg(response.msg,{
+                                   time : 1500,
+                               })
+                            },
+                            complete: function () {
+                                layer.close(loadIndex);
+
+                            },
 
                         });
-
                         layer.close(index);
                     }
                 });

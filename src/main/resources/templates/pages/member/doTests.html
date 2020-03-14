@@ -13,7 +13,7 @@
             <div class="layui-input-inline" style="width: 20%">
                 <label class="layui-form-label">配置环境</label>
                 <div class="layui-input-block">
-                    <select name="environment">
+                    <select name="environment" id="environment">
                         <option value="1" selected>准生产</option>
                         <option value="2">联调主</option>
                         <option value="3">联调次</option>
@@ -181,7 +181,7 @@
                             "                <div class=\"layui-input-inline\" style=\"width: 25%\">\n" +
                             "                    <label class=\"layui-form-label\">密码/验证码</label>\n" +
                             "                    <div class=\"layui-input-block\">\n" +
-                            "                        <select name=\"wordType\" lay-filter=\"wordType\" id=\"environment\">\n" +
+                            "                        <select name=\"wordType\" lay-filter=\"wordType\">\n" +
                             "                            <option value=\"1\" selected>密码</option>\n" +
                             "                            <option value=\"2\">验证码：8888</option>\n" +
                             "                            <option value=\"3\">真实验证码</option>\n" +
@@ -307,6 +307,7 @@
             var $ = layui.jquery;
             var telephone = $('#accountName').val();
             var environment = $('#environment').val();
+            console.log(environment);
             if (telephone.length != 11) {
                 layer.msg("手机号码格式错误", {
                     time: 2000,
@@ -321,9 +322,20 @@
                             data: {'accountName': telephone, 'environment': environment},
                             type: "Post",
                             dataType: "json",
+                            beforeSend: function () {
+                                loadIndex = layer.load(0, {shade: 0.3});
+                            },
+                            success: function (response) {
+                                layer.msg(response.msg,{
+                                    time : 1500,
+                                })
+                            },
+                            complete: function () {
+                                layer.close(loadIndex);
+
+                            },
 
                         });
-
                         layer.close(index);
                     }
                 });

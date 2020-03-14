@@ -36,6 +36,8 @@ public class DoTestController {
     private TestRecordMapper testRecordMapper;
     @Autowired
     private ResponseJson responseJson;
+    @Autowired
+    private ApiUtil apiUtil;
 
     @PostMapping("/once")
     @ResponseBody
@@ -97,6 +99,12 @@ public class DoTestController {
     @ResponseBody
     public JSONObject getCode(RequestGetCode requestGetCode) throws Throwable {
         Map<String,String> response = testUtil.getCode(requestGetCode.getAccountName(),requestGetCode.getEnvironment());
-        return responseJson.getMsg("成功",0);
+        String status  = apiUtil.getStatus(response);
+        if(status.equals("200")){
+            return responseJson.getMsg("成功",0);
+        }else {
+            return responseJson.getMsg(apiUtil.getResult(response),1);
+        }
+
     }
 }

@@ -111,15 +111,15 @@ public class ApiUtil {
                 break;
             //接口末尾固定参数
             case 1:
-                api = api +"/"+ apiUtilData.getUri().getUrivar();
+                api = api + "/" + apiUtilData.getUri().getUrivar();
                 break;
             //接口末尾参数来自依赖的接口
             case 2:
-                api = api +"/"+ "";
+                api = api + "/" + "";
                 break;
             //接口末尾参是来自测试用例的手动调整
             case 3:
-                api = api +"/"+ apiUtilData.getTestCase().getApivar();
+                api = api + "/" + apiUtilData.getTestCase().getApivar();
         }
         System.err.println(api);
         return api;
@@ -234,7 +234,7 @@ public class ApiUtil {
         verification.objToObj(head, head1);
         verification.objToObj(head, head2Value);
         verification.objToObj(head, head3);
-        System.err.println(apiUtilData.getTestCase().getTestMark()+head);
+        System.err.println(apiUtilData.getTestCase().getTestMark() + head);
         return head;
     }
 
@@ -313,7 +313,7 @@ public class ApiUtil {
                     ext.set(p, value);
                 }
             }
-            System.out.println("尼玛"+ext.jsonString());
+            System.out.println("尼玛" + ext.jsonString());
             return ext.jsonString();
         }
         return null;
@@ -327,9 +327,9 @@ public class ApiUtil {
     public HttpPost getPost(ApiUtilData apiUtilData, String authorization) throws Throwable {
         HttpPost post = new HttpPost(getTestApi(apiUtilData));
         //如果是登入接口，那就是传入basic,如果不是，就是传入token
-        if(!authorization.equals("0")){
-            post.setHeader("Authorization", authorization);
-        }
+
+        post.setHeader("Authorization", authorization);
+
 
         //放入请求头信息
         JSONObject headObj = getHeadObj(apiUtilData);
@@ -339,7 +339,7 @@ public class ApiUtil {
             post.setHeader(key, headObj.get(key).toString());
         }
 
-            System.err.println(post.getAllHeaders().toString());
+        System.err.println(post.getAllHeaders().toString());
 
         //放入请求提系信息
         JSONObject form = getBobyOfForm(apiUtilData);
@@ -437,7 +437,7 @@ public class ApiUtil {
      */
     public HttpPut getPut(ApiUtilData apiUtilData, String token) throws Throwable {
         HttpPut put = new HttpPut(getTestApi(apiUtilData));
-        if(!token.equals("0")){
+        if (!token.equals("0")) {
             put.setHeader("Authorization", token);
         }
         JSONObject headObj = getHeadObj(apiUtilData);
@@ -591,14 +591,14 @@ public class ApiUtil {
     /**
      * 期望值的验证---状态码的验证
      */
-    public String isStatus(ApiUtilData data,String status){
-        String expect = data.getTestCase().getStatus()+"";
-        if(status.equals(data.getTestCase().getStatus()+"")){
+    public String isStatus(ApiUtilData data, String status) {
+        String expect = data.getTestCase().getStatus() + "";
+        if (status.equals(data.getTestCase().getStatus() + "")) {
             return "true";
-        }else {
+        } else {
             JSONObject expected = new JSONObject();
-            expected.put("expect",expect);
-            expected.put("result",status);
+            expected.put("expect", expect);
+            expected.put("result", status);
             return expected.toString();
         }
     }

@@ -319,7 +319,7 @@ public class TestUtil {
             String rely = testMapper.getRelyByTestcaseId(testid);
 
             //看一下依赖是不是都是存在的
-            if (rely != null || rely.equals("")) {
+            if (rely != null && !rely.equals("")) {
                 String[] relyList = rely.split(",");
                 for (String relyId : relyList) {
                     if (!testIds.contains(Integer.parseInt(relyId))) {

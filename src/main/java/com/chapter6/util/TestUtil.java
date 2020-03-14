@@ -58,6 +58,8 @@ public class TestUtil {
                 data.getDoTest().getEnvironment()
         );
 
+
+
         //获取登入接口的数据
         RequestUri loginUri = uriMapper.getUriById(0);
 
@@ -71,9 +73,10 @@ public class TestUtil {
         } else {
             webformOfTest.put("grant_type", "sms_code");
             if (data.getDoTest().getCodeword().equals("8888")) {
-                webformOfTest.put("smsCode", DigestUtils.md5DigestAsHex(
-                        data.getDoTest().getCodeword().getBytes()));
+                getCode(data.getDoTest().getStoreAccount(),data);
             }
+            webformOfTest.put("smsCode", DigestUtils.md5DigestAsHex(
+                    data.getDoTest().getCodeword().getBytes()));
         }
         loginTestCase.setWebform(webformOfTest.toString());
 
@@ -317,6 +320,37 @@ public class TestUtil {
         }
         map.put("msg","true");
         return  map;
+    }
+
+
+    /**
+     * 请求获取验证码的接口
+     */
+    public void getCode(String telephone,ApiUtilData data) throws Throwable {
+
+        //创建一个新的数据集合
+        ApiUtilData getCodeData = new ApiUtilData();
+        //创建一个新的  登入专用的dotest数据集合
+        RequestDoTest getCodeDoTest = new RequestDoTest();
+        //存入环境
+        getCodeDoTest.setEnvironment(
+                data.getDoTest().getEnvironment()
+        );
+
+
+
+        //获取获取验证码接口的数据
+        RequestUri getCodeUri = uriMapper.getUriById(1);
+        JSONObject json = verification.stringToJsonObject(getCodeUri.getJsontext1());
+        json.put("mobile",telephone);
+        getCodeUri.setJsontext1(json.toString());
+        RequestTestCase getCodeTestcase = testMapper.getTestCaseById(1);
+
+        getCodeData.setUri(getCodeUri);
+        getCodeData.setDoTest(getCodeDoTest);
+        getCodeData.setTestCase(getCodeTestcase);
+        Map<String,String> map = apiUtil.getResponse(getCodeData,"0");
+        System.out.println(apiUtil.getResult(map));
     }
 
 

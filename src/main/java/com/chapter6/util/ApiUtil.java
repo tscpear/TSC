@@ -121,6 +121,7 @@ public class ApiUtil {
             case 3:
                 api = api +"/"+ apiUtilData.getTestCase().getApivar();
         }
+        System.err.println(api);
         return api;
     }
 
@@ -325,7 +326,9 @@ public class ApiUtil {
     public HttpPost getPost(ApiUtilData apiUtilData, String authorization) throws Throwable {
         HttpPost post = new HttpPost(getTestApi(apiUtilData));
         //如果是登入接口，那就是传入basic,如果不是，就是传入token
-        post.setHeader("Authorization", authorization);
+        if(!authorization.equals("0")){
+            post.setHeader("Authorization", authorization);
+        }
 
         //放入请求头信息
         JSONObject headObj = getHeadObj(apiUtilData);
@@ -431,7 +434,9 @@ public class ApiUtil {
      */
     public HttpPut getPut(ApiUtilData apiUtilData, String token) throws Throwable {
         HttpPut put = new HttpPut(getTestApi(apiUtilData));
-        put.setHeader("Authorization", token);
+        if(!token.equals("0")){
+            put.setHeader("Authorization", token);
+        }
         JSONObject headObj = getHeadObj(apiUtilData);
         Iterator<String> head = headObj.keys();
         while (head.hasNext()) {

@@ -100,92 +100,93 @@
         console.log(data);
         var jsonString = JSON.stringify(data);
         initData = JSON.parse(jsonString);
-    }
+        layui.use(["element", "form", "okLayer", "okUtils", "jquery", "layer"], function () {
 
-    layui.use(["element", "form", "okLayer", "okUtils", "jquery", "layer"], function () {
+            var form = layui.form;
+            var okLayer = layui.okLayer;
+            var okUtils = layui.okUtils;
+            var $ = layui.jquery;
+            var layer = layui.layer;
 
-        var form = layui.form;
-        var okLayer = layui.okLayer;
-        var okUtils = layui.okUtils;
-        var $ = layui.jquery;
-        var layer = layui.layer;
-
-        form.on("select(wordType)", function (data) {
-            if (data.value == 1) {
-                showByCheckBox(true, "password", "passwordText");
-                showByCheckBox(false, "codeword", "codewordText");
-                $("#getCodeword").hide();
-            } else if (data.value == 2) {
-                showByCheckBox(false, "password", "passwordText");
-                showByCheckBox(true, "codeword", "codewordText");
-                $("#getCodeword").hide();
-                initData.codeword = "8888"
-                form.val("filter", initData);
-            } else {
-                showByCheckBox(false, "password", "passwordText");
-                showByCheckBox(true, "codeword", "codewordText");
-                $("#getCodeword").show();
-            }
-        });
-
-        form.on("submit(doTest)", function (data) {
-            console.log(data);
-            $.ajax({
-                url: "/dotest/once",
-                data: data.field,
-                type: "post",
-                dataType: "json",
-                success: function (response) {
-                    var value = response.data.responseValue.toString();
-                    $("#response").append(
-                        "<label class=\"layui-form-label\">返回值</label>\n" +
-                        "                <div class=\"layui-input-block\">\n" +
-                        "                    <textarea  placeholder=\"请输入内容\" class=\"layui-textarea\" id='ttt'></textarea>\n" +
-                        "                </div>"
-                    );
-                    $("#ttt").val(value);
-                    $("#ttt").height($("#ttt")[0].scrollHeight);
-                    $("#ttt").on("keyup keydown", function () {
-                        $(this).height(this.scrollHeight);
-                    });
-
-                    var expect = response.data.statusExpect.toString();
-                    var expectObject = JSON.parse(expect);
-                    if (expect.length>0) {
-
-                        if (expect == "true") {
-                            $("#statusExpect").append(
-                                "<i class=\"layui-icon layui-icon-face-smile\" style=\"font-size: 30px; color:green; text-align: center\" >测试通过</i>"
-                            );
-                        } else {
-                            $("#statusExpect").append(
-                                "<i class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 30px; color:green;\">状态码：期望值："+expectObject.get("expected")+",实际值："+expectObject.get("result")+"</i>"
-                            );
-                        }
-                    }
+            form.on("select(wordType)", function (data) {
+                if (data.value == 1) {
+                    showByCheckBox(true, "password", "passwordText");
+                    showByCheckBox(false, "codeword", "codewordText");
+                    $("#getCodeword").hide();
+                } else if (data.value == 2) {
+                    showByCheckBox(false, "password", "passwordText");
+                    showByCheckBox(true, "codeword", "codewordText");
+                    $("#getCodeword").hide();
+                    initData.codeword = "8888"
+                    form.val("filter", initData);
+                } else {
+                    showByCheckBox(false, "password", "passwordText");
+                    showByCheckBox(true, "codeword", "codewordText");
+                    $("#getCodeword").show();
                 }
             });
-            return false;
-        });
 
-        form.val("filter", initData);
-        form.render();
+            form.on("submit(doTest)", function (data) {
+                console.log(data);
+                $.ajax({
+                    url: "/dotest/once",
+                    data: data.field,
+                    type: "post",
+                    dataType: "json",
+                    success: function (response) {
+                        var value = response.data.responseValue.toString();
+                        $("#response").append(
+                            "<label class=\"layui-form-label\">返回值</label>\n" +
+                            "                <div class=\"layui-input-block\">\n" +
+                            "                    <textarea  placeholder=\"请输入内容\" class=\"layui-textarea\" id='ttt'></textarea>\n" +
+                            "                </div>"
+                        );
+                        $("#ttt").val(value);
+                        $("#ttt").height($("#ttt")[0].scrollHeight);
+                        $("#ttt").on("keyup keydown", function () {
+                            $(this).height(this.scrollHeight);
+                        });
+
+                        var expect = response.data.statusExpect.toString();
+                        var expectObject = JSON.parse(expect);
+                        if (expect.length>0) {
+
+                            if (expect == "true") {
+                                $("#statusExpect").append(
+                                    "<i class=\"layui-icon layui-icon-face-smile\" style=\"font-size: 30px; color:green; text-align: center\" >测试通过</i>"
+                                );
+                            } else {
+                                $("#statusExpect").append(
+                                    "<i class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 30px; color:green;\">状态码：期望值："+expectObject.get("expected")+",实际值："+expectObject.get("result")+"</i>"
+                                );
+                            }
+                        }
+                    }
+                });
+                return false;
+            });
+
+            form.val("filter", initData);
+            form.render();
 
 
-        /*方法区*/
+            /*方法区*/
 
-        //通过复选框，决定展示不展示,同时清空value，移除必填的属性
-        function showByCheckBox(b, showId, showTextId) {
-            if (b) {
-                $("#" + showId + "").show();
-                $("#" + showTextId + "").attr("lay-verify", "required");
-            } else {
-                $("#" + showId + "").hide();
-                $("#" + showTextId + "").removeAttr("lay-verify");
-                $("#" + showTextId + "").val("");
+            //通过复选框，决定展示不展示,同时清空value，移除必填的属性
+            function showByCheckBox(b, showId, showTextId) {
+                if (b) {
+                    $("#" + showId + "").show();
+                    $("#" + showTextId + "").attr("lay-verify", "required");
+                } else {
+                    $("#" + showId + "").hide();
+                    $("#" + showTextId + "").removeAttr("lay-verify");
+                    $("#" + showTextId + "").val("");
+                }
             }
-        }
-    });
+        });
+    }
+
+
 
 
 </script>

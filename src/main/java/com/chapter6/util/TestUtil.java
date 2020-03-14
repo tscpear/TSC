@@ -54,8 +54,9 @@ public class TestUtil {
         RequestDoTest loginDoTest = new RequestDoTest();
 
         //存入环境
+        int environment = data.getDoTest().getEnvironment();
         loginDoTest.setEnvironment(
-                data.getDoTest().getEnvironment()
+                environment
         );
 
 
@@ -73,7 +74,7 @@ public class TestUtil {
         } else {
             webformOfTest.put("grant_type", "sms_code");
             if (data.getDoTest().getCodeword().equals("8888")) {
-                getCode(data.getDoTest().getStoreAccount(),data);
+                getCode(data.getDoTest().getStoreAccount(),environment);
             }
             webformOfTest.put("smsCode", DigestUtils.md5DigestAsHex(
                     data.getDoTest().getCodeword().getBytes()));
@@ -326,15 +327,14 @@ public class TestUtil {
     /**
      * 请求获取验证码的接口
      */
-    public void getCode(String telephone,ApiUtilData data) throws Throwable {
+    public void getCode(String telephone,int environment) throws Throwable {
 
         //创建一个新的数据集合
         ApiUtilData getCodeData = new ApiUtilData();
         //创建一个新的  登入专用的dotest数据集合
         RequestDoTest getCodeDoTest = new RequestDoTest();
         //存入环境
-        getCodeDoTest.setEnvironment(
-                data.getDoTest().getEnvironment()
+        getCodeDoTest.setEnvironment(environment
         );
 
 

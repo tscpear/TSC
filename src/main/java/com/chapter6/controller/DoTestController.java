@@ -87,4 +87,9 @@ public class DoTestController {
         }
 
     }
+    @PostMapping("getCode")
+    @ResponseBody
+    public JSONObject getCode(){
+
+    }
 }

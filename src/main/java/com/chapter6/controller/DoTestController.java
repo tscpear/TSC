@@ -88,6 +88,8 @@ public class DoTestController {
                     JSONArray obj = new JSONArray();
                     obj.add(0,recordTest.getTestcaseId());
                     obj.add(1,recordTest.getStatusExpect());
+                    obj.add(2,recordTest.getResponseValueExpect());
+                    obj.add(3,recordTest.getSqlExpect());
                     array.add(obj);
                 }
 

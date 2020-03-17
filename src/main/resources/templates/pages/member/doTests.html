@@ -5,6 +5,12 @@
     <title>添加测试用例</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../../../static/home/css/oksub.css">
+    <style>
+        button{
+            border:none !important;
+            background: #fff;
+        }
+    </style>
 </head>
 <body>
 <div class="ok-body">
@@ -229,6 +235,8 @@
                 }
             });
 
+            form.on("submit()")
+
             form.on("submit(doTest)", function (data) {
 
                 form.render();
@@ -247,19 +255,16 @@
                             for (var i in value) {
                                 var valueJson = value[i];
                                 var testId = "testId" + valueJson[0];
-                                if (valueJson[1] == "true") {
-                                    $("#" + testId + "").html( "<div></div>");
+                                $("#" + testId + "").html( "<div></div>");
+                                if (valueJson[1] == "true" && valueJson[2]=="true" && valueJson[3]=="true") {
                                     $("#" + testId + "").append(
                                         "<div class=\"layui-input-inline\">" +
                                         "<i class=\"layui-icon layui-icon-face-smile\" style=\"font-size: 30px; color:green\" ></i>" +
                                         "</div>"
                                     );
                                 } else {
-                                    $("#" + testId + "").html(
-                                        "<div></div>"
-                                    );
                                     $("#" + testId + "").append(
-                                        "<i class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 30px; color:red\"></i>"
+                                        "<button class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 30px; color:red;\">"+"</button>"
                                     );
                                 }
                             }
@@ -295,6 +300,8 @@
                     $("#" + showTextId + "").val("");
                 }
             }
+
+
         });
     }
 

@@ -86,7 +86,7 @@
           and testcase_id = #{testcaseId}
     </select>
     <select id="getTestRecordByRecord" resultMap="recordResultMap">
-        select testcase_id, status_expect
+        select *
         from test_record
         where record_id = #{recordId};
     </select>

@@ -91,7 +91,19 @@
         where record_id = #{recordId};
     </select>
     <select id="getStatusByRelyTestcaseId" resultType="java.lang.String">
-        select status_expect from test_record where testcase_id = #{relyTestcaseId} and record_id = #{recordId};
+        select status_expect
+        from test_record
+        where testcase_id = #{relyTestcaseId}
+          and record_id = #{recordId};
     </select>
+    <update id="updataExpectResult">
+        update test_record
+        set status_expect         = #{status},
+            sql_expect            = #{sql},
+            response_value_expect = #{response}
+        where record_id = #{recordId}
+          and user_group_id = #{userGroupId}
+          and testcase_id = #{testcaseId};
+    </update>
 
 </mapper>

@@ -5,6 +5,7 @@ import com.chapter6.mapper.TestMapper;
 import com.chapter6.mapper.TestRecordMapper;
 import com.chapter6.mapper.UriMapper;
 import com.chapter6.model.ApiUtilData;
+import com.chapter6.model.ExpectMap;
 import com.chapter6.model.request.RequestDoTest;
 import com.chapter6.model.request.RequestRecordTest;
 import com.chapter6.model.request.RequestTestCase;
@@ -35,6 +36,8 @@ public class TestUtil {
     private TestRecordMapper testRecordMapper;
     @Autowired
     private TestMapper testMapper;
+    @Autowired
+    private ExpectUtil expectUtil;
 
     /**
      * 登入+获取Token 或者
@@ -151,28 +154,28 @@ public class TestUtil {
          * 此处缺一个登入成功的判断
          */
         String responseValueString = apiUtil.getResult(response);
+        String status = apiUtil.getStatus(response);
+
+        ExpectMap expectMap = expectUtil.expectResult(status, responseValueString, data.getTestCase());
 
 
         //期望值的验证
-        if (data.getTestCase().getExpectOfStatus() == 3) {
-            requestRecordTest.setStatusExpect(apiUtil.isStatus(data, apiUtil.getStatus(response)));
+        if (expectMap.getStatusMsg().equals("true")) {
 
 
-            if (apiUtil.getStatus(response).equals("200")) {
-                if (data.getUri().getSave().length() > 0) {
-                    JSONObject saves = verification.stringToJsonObject(data.getUri().getSave());
-                    JSONObject saveValues = new JSONObject();
-                    Iterator<String> save = saves.keys();
-                    while (save.hasNext()) {
-                        String saveName = save.next();
-                        String saveWay = saves.get(saveName).toString();
-                        Object values = JsonPath.read(responseValueString, saveWay);
-                        saveValues.put(saveName, values);
-                    }
-
-
-                    requestRecordTest.setValue(saveValues.toString());
+            if (data.getUri().getSave().length() > 0) {
+                JSONObject saves = verification.stringToJsonObject(data.getUri().getSave());
+                JSONObject saveValues = new JSONObject();
+                Iterator<String> save = saves.keys();
+                while (save.hasNext()) {
+                    String saveName = save.next();
+                    String saveWay = saves.get(saveName).toString();
+                    Object values = JsonPath.read(responseValueString, saveWay);
+                    saveValues.put(saveName, values);
                 }
+
+
+                requestRecordTest.setValue(saveValues.toString());
             }
 
 
@@ -188,6 +191,7 @@ public class TestUtil {
 
 
         testRecordMapper.insert(requestRecordTest);
+        expectUtil.responseResultExpect(expectMap,data);
 
 
         System.out.println(responseValueString);
@@ -219,7 +223,7 @@ public class TestUtil {
         ApiUtilData loginData = apiUtil.getData(loginDoTest);
 
         String tokenAndUserGroupId = getToken(loginData, record);
-        if(tokenAndUserGroupId.length()<4){
+        if (tokenAndUserGroupId.length() < 4) {
             return tokenAndUserGroupId;
         }
 
@@ -244,7 +248,7 @@ public class TestUtil {
             data.setRequestRecordTest(requestRecordTest);
             String rely = data.getTestCase().getRely();
             Map<String, String> response = new HashMap<>();
-            if (rely == null || rely.equals("")) {
+            if (verification.isEmpty(rely)) {
                 response = apiUtil.getResponse(data, token);
             } else {
                 boolean relyTrue = true;
@@ -260,14 +264,12 @@ public class TestUtil {
                 }
             }
             String responseValueString = apiUtil.getResult(response);
+            String status = apiUtil.getStatus(response);
+            ExpectMap expectMap = expectUtil.expectResult(status,responseValueString,data.getTestCase());
 
             //状态码期望值的验证
-            if (data.getTestCase().getExpectOfStatus() == 3) {
-                requestRecordTest.setStatusExpect(apiUtil.isStatus(data, apiUtil.getStatus(response)));
 
-
-                //存放需要的值
-                if ("200".equals("apiUtil.getStatus(response)")) {
+                if ("200".equals(apiUtil.getStatus(response))) {
                     if (data.getUri().getSave().length() > 0) {
                         JSONObject saves = verification.stringToJsonObject(data.getUri().getSave());
                         JSONObject saveValues = new JSONObject();
@@ -284,11 +286,11 @@ public class TestUtil {
 
 
                 //返回值期望的验证
-                if(data.getTestCase().getApi()==1){
-                    requestRecordTest.setResponseValueExpect(apiUtil.isResponseValueExpect(responseValueString,data.getTestCase().getApis()));
+                if (data.getTestCase().getApi() == 1) {
+                    requestRecordTest.setResponseValueExpect(apiUtil.isResponseValueExpect(responseValueString, data.getTestCase().getApis()));
                 }
 
-            }
+
 
 
             requestRecordTest.setUserGroupId(userGroupId);
@@ -300,6 +302,7 @@ public class TestUtil {
 
 
             testRecordMapper.insert(requestRecordTest);
+            expectUtil.responseResultExpect(expectMap,data);
 
 
             System.out.println(responseValueString);
@@ -344,7 +347,7 @@ public class TestUtil {
     /**
      * 请求获取验证码的接口
      */
-    public  Map<String, String> getCode(String telephone, int environment) throws Throwable {
+    public Map<String, String> getCode(String telephone, int environment) throws Throwable {
 
         //创建一个新的数据集合
         ApiUtilData getCodeData = new ApiUtilData();
@@ -364,7 +367,7 @@ public class TestUtil {
         getCodeData.setUri(getCodeUri);
         getCodeData.setDoTest(getCodeDoTest);
         getCodeData.setTestCase(getCodeTestcase);
-        return  apiUtil.getResponse(getCodeData, "0");
+        return apiUtil.getResponse(getCodeData, "0");
     }
 
 

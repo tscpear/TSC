@@ -61,7 +61,12 @@ public class DoTestController {
 
         //状态码，断言结果
         String statusExpect = record.getStatusExpect();
+        String responseExpect = record.getResponseValueExpect();
+        String sqlExpect  = record.getSqlExpect();
         obj.put("statusExpect", statusExpect);
+        obj.put("responseExpect",responseExpect);
+        obj.put("sqlExpect",sqlExpect);
+
 
         //返回值结果打印
         String pretty = JSON.toJSONString(responseValue, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,

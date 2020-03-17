@@ -43,4 +43,8 @@ public interface TestRecordMapper {
      * 获取状态码的结果
      */
     String getStatusByRelyTestcaseId(Integer relyTestcaseId,long recordId);
+    /**
+     * 存放期望值对比结果
+     */
+    void updataExpectResult(String status,String response,String sql,long recordId,int testcaseId,long userGroupId);
 }

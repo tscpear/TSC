@@ -135,6 +135,7 @@
                     dataType: "json",
                     success: function (response) {
                         var value = response.data.responseValue.toString();
+                        $("#response").html("<div></div>");
                         $("#response").append(
                             "<label class=\"layui-form-label\">返回值</label>\n" +
                             "                <div class=\"layui-input-block\">\n" +
@@ -147,19 +148,33 @@
                             $(this).height(this.scrollHeight);
                         });
 
-                        var expect = response.data.statusExpect.toString();
-                        var expectObject = JSON.parse(expect);
-                        if (expect.length>0) {
+                        var statusExpect = response.data.statusExpect.toString();
+                        var responseExpect = response.data.responseExpect.toString();
+                        var sqlExpect = response.data.sqlExpect.toString();
+                        $("#statusExpect").html(
+                            "<div></div>"
+                        )
 
-                            if (expect == "true") {
+                            if (statusExpect == "true" && responseExpect=="true" && sqlExpect=="true") {
                                 $("#statusExpect").append(
-                                    "<i class=\"layui-icon layui-icon-face-smile\" style=\"font-size: 30px; color:green; text-align: center\" >测试通过</i>"
+                                    "<i class=\"layui-icon layui-icon-face-smile\" style=\"font-size: 30px; color:lawngreen; text-align: center\" >测试通过</i>"
                                 );
                             } else {
-                                $("#statusExpect").append(
-                                    "<i class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 30px; color:green;\">状态码：期望值："+expectObject.get("expected")+",实际值："+expectObject.get("result")+"</i>"
-                                );
-                            }
+                                if(statusExpect!="true"){
+                                    $("#statusExpect").append(
+                                        "<i class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 30px; color:red;\">"+statusExpect+"</i>"
+                                    );
+                                }else if(responseExpect!="ture"){
+                                    $("#statusExpect").append(
+                                        "<i class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 30px; color:red;\">"+responseExpect+"</i>"
+                                    );
+                                }else {
+                                    $("#statusExpect").append(
+                                        "<i class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 30px; color:red;\">"+sqlExpect+"</i>"
+                                    );
+                                }
+
+
                         }
                     }
                 });

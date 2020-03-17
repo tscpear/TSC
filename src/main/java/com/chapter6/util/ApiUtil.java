@@ -559,6 +559,9 @@ public class ApiUtil {
      * 获取返回体
      */
     public String getResult(Map<String, String> map) {
+        if (map == null) {
+            return "没有返回值";
+        }
         System.err.println(map.get("result"));
         return map.get("result");
     }
@@ -567,6 +570,9 @@ public class ApiUtil {
      * 获取cookie
      */
     public String getCookie(Map<String, String> map) {
+        if (map == null) {
+            return "没有返回值";
+        }
         return map.get("cookie");
 
     }
@@ -575,6 +581,10 @@ public class ApiUtil {
      * 获取状态码
      */
     public String getStatus(Map<String, String> map) {
+
+        if (map == null) {
+            return "没有返回值";
+        }
         return map.get("status");
     }
 
@@ -593,7 +603,7 @@ public class ApiUtil {
      */
     public String isStatus(ApiUtilData data, String status) {
         String expect = data.getTestCase().getStatus() + "";
-        if (status.equals(data.getTestCase().getStatus() + "")) {
+        if (expect.equals(status)) {
             return "true";
         } else {
             JSONObject expected = new JSONObject();

@@ -267,7 +267,7 @@ public class TestUtil {
 
 
                 //存放需要的值
-                if (apiUtil.getStatus(response).equals("200")) {
+                if ("200".equals("apiUtil.getStatus(response)")) {
                     if (data.getUri().getSave().length() > 0) {
                         JSONObject saves = verification.stringToJsonObject(data.getUri().getSave());
                         JSONObject saveValues = new JSONObject();

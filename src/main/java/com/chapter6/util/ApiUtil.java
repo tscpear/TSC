@@ -10,6 +10,7 @@ import com.chapter6.model.request.RequestDoTest;
 import com.chapter6.model.request.RequestRecordTest;
 import com.chapter6.model.request.RequestTestCase;
 import com.chapter6.model.request.RequestUri;
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.http.Header;
@@ -611,6 +612,25 @@ public class ApiUtil {
             expected.put("result", status);
             return expected.toString();
         }
+    }
+
+
+    /**
+     * 期望值的验证---某些返回值的验证
+     */
+    public String isResponseValueExpect(String response, String expect) throws Throwable {
+        JSONObject responseValueExpect = verification.stringToJsonObject(expect);
+       Iterator<String> expectValue = responseValueExpect.keys();
+       while (expectValue.hasNext()){
+           String way = expectValue.next();
+           String rValue = responseValueExpect.get(way).toString();
+           String eValue = JsonPath.parse(response).read(way).toString();
+           if(!rValue.equals(eValue)){
+
+               return "false";
+           }
+       }
+       return "true";
     }
 
 }

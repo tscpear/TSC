@@ -261,7 +261,7 @@ public class TestUtil {
             }
             String responseValueString = apiUtil.getResult(response);
 
-            //期望值的验证
+            //状态码期望值的验证
             if (data.getTestCase().getExpectOfStatus() == 3) {
                 requestRecordTest.setStatusExpect(apiUtil.isStatus(data, apiUtil.getStatus(response)));
 
@@ -280,6 +280,12 @@ public class TestUtil {
                         }
                         requestRecordTest.setValue(saveValues.toString());
                     }
+                }
+
+
+                //返回值期望的验证
+                if(data.getTestCase().getApi()==1){
+                    requestRecordTest.setResponseValueExpect(apiUtil.isResponseValueExpect(responseValueString,data.getTestCase().getApis()));
                 }
 
             }

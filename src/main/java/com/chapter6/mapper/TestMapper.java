@@ -1,7 +1,5 @@
 package com.chapter6.mapper;
 
-import com.chapter6.model.Test;
-import com.chapter6.model.TestCaseEdit;
 import com.chapter6.model.request.ListParam;
 import com.chapter6.model.request.RequestTestCase;
 import org.apache.ibatis.annotations.Mapper;

@@ -4,6 +4,7 @@ import com.mysql.cj.xdevapi.JsonArray;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Iterator;
 
@@ -73,5 +74,20 @@ public class Verification {
         }catch (Exception e){
             return false;
         }
+    }
+    /**
+     * 判断是不是控制
+     */
+    public boolean isEmpty(Object o){
+        if(StringUtils.isEmpty(o)){
+            return true;
+        }
+        if(o==null){
+            return true;
+        }
+        if(o.equals("")){
+            return true;
+        }
+        return false;
     }
 }

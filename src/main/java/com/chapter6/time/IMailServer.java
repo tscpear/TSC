@@ -15,7 +15,7 @@ public interface IMailServer {
      * @param subject 主题
      * @param content 内容
      */
-    public void sendHtmlMail(String to, String subject, String content);
+     void sendHtmlMail(String to, String subject, String content);
 
 
 
@@ -26,5 +26,5 @@ public interface IMailServer {
      * @param content 内容
      * @param filePath 附件
      */
-    public void sendAttachmentsMail(String to, String subject, String content, String filePath);
+     void sendAttachmentsMail(String to, String subject, String content, String filePath);
 }

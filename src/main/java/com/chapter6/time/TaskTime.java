@@ -59,11 +59,14 @@ public class TaskTime {
 
             }
             if(!text.equals("")){
-                mailServer.sendSimpleMail("515090974@qq.com","自动化接口测试错误反馈",text);
+                mailServer.sendSimpleMail("515090974@qq.com","准生产",text);
+                mailServer.sendSimpleMail("513653423@qq.com","准生产",text);
             }
         }else{
-            mailServer.sendSimpleMail("515090974@qq.com","自动化接口测试错误反馈","内容：登入有问题");
+            mailServer.sendSimpleMail("515090974@qq.com","准生产","内容：登入有问题");
+            mailServer.sendSimpleMail("513653423@qq.com","准生产","内容：登入有问题");
         }
-    }
+        }
+
 
 }

@@ -21,10 +21,11 @@ public class TireOrderTime {
      * @Scheduled :设置定时任务
      * cron属性：cron表达式 定时任务触发时间的string 的表达式
      */
-    @Scheduled(cron = "0/2000000 * * * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void schedubedMethod() throws Throwable {
         System.out.println("来一发");
         taskTime.doTest();
     }
+
 
 }

@@ -4,12 +4,26 @@ spring:
   thymeleaf:
     cache: false
 
-#配置数据库
+  #配置数据库
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: db_user
     password: kybb123456
     url: jdbc:mysql://dev-mysql.zhilun-base.com:3306/test_tsc_b?useUnicode=true&characterEncoding=UTF8&useSSL=false
+    #邮箱配置
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: 2468668576@qq.com
+    password:
+    from: 2468668576@qq.com
+    properties: mgjlurmdqgfieaig
+      mail:
+        debug: true
+      stmp:
+        auth: true
+        ssl:
+          enable: true
 
 #配置sql映射
 mybatis:
@@ -19,6 +33,6 @@ mybatis:
 #配置sql的打印
 logging:
   level:
-    com.example.demo.dao : debug
+    com.example.demo.dao: debug
 
 

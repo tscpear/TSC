@@ -235,7 +235,7 @@
                 }
             });
 
-            form.on("submit()")
+
 
             form.on("submit(doTest)", function (data) {
 
@@ -264,7 +264,7 @@
                                     );
                                 } else {
                                     $("#" + testId + "").append(
-                                        "<button class=\"layui-icon layui-icon-face-cry\" style=\"font-size: 30px; color:red;\">"+"</button>"
+                                        "<i class=\"layui-icon layui-icon-face-cry\"  style=\"font-size: 30px; color:red;\">"+"</i>"
                                     );
                                 }
                             }
@@ -281,7 +281,7 @@
 
                 });
                 return false;
-            });
+        });
 
             form.val("filter", initData);
             form.render();

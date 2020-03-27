@@ -80,6 +80,7 @@ public class Verification {
      */
     public boolean isEmpty(Object o){
         if(StringUtils.isEmpty(o)){
+
             return true;
         }
         if(o==null){

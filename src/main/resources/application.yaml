@@ -13,10 +13,10 @@ spring:
     #邮箱配置
   mail:
     host: smtp.qq.com
-    port: 465
-    username: 2468668576@qq.com
+    port: 587
+    username: 2465668576@qq.com
     password: mgjlurmdqgfieaig
-    from: 2468668576@qq.com
+    from: 2465668576@qq.com
     properties:
       mail:
         debug: true

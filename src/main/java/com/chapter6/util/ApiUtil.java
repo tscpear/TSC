@@ -101,7 +101,7 @@ public class ApiUtil {
                 api = url.getIntegrationMajor() + uri;
                 break;
             case 7:
-                api = url.getIntegrationMajor() + uri;
+                api = url.getProd() + uri;
                 break;
         }
 
@@ -151,7 +151,7 @@ public class ApiUtil {
             if (environment == 1) {
                 return "Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjU4NjgzZmU4ZWU2MDRmN2I5MTlhYzM0YTFmMjVkOGUy";
             } else if (environment == 7) {
-                return "Basic ";
+                return "Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjU4NjgzZmU4ZWU2MDRmN2I5MTlhYzM0YTFmMjVkOGUy";
             } else {
                 return "Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjEzNDgwNWRiZWIyODZhZjk3NTRjNTM5ODIzZGJmMTI4";
             }

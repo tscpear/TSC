@@ -274,10 +274,15 @@ public class TestUtil {
                         JSONObject saves = verification.stringToJsonObject(data.getUri().getSave());
                         JSONObject saveValues = new JSONObject();
                         Iterator<String> save = saves.keys();
+
+                        /**
+                         * 存入依赖的值
+                         */
                         while (save.hasNext()) {
                             String saveName = save.next();
                             String saveWay = saves.get(saveName).toString();
                             Object values = JsonPath.read(responseValueString, saveWay);
+                            values = getRelyValue(values);
                             saveValues.put(saveName, values);
                         }
                         requestRecordTest.setValue(saveValues.toString());
@@ -368,6 +373,19 @@ public class TestUtil {
         getCodeData.setDoTest(getCodeDoTest);
         getCodeData.setTestCase(getCodeTestcase);
         return apiUtil.getResponse(getCodeData, "0");
+    }
+
+    /**
+     * 对获取值的转义
+     */
+    public Object getRelyValue(Object o){
+        String s = o+"";
+        Object obj = null;
+        JSONArray array = new JSONArray(s);
+        if(array.length()<2){
+            obj = array.get(0).toString();
+        }
+        return obj;
     }
 
 

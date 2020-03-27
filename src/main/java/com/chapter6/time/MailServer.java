@@ -9,12 +9,14 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
 
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 
+@Component
 public class MailServer implements IMailServer {
-    private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+   /* private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());*/
     /**
      * Spring Boot 提供了一个发送邮件的简单抽象，使用的是下面这个接口，这里直接注入即可使用
      */
@@ -75,9 +77,9 @@ public class MailServer implements IMailServer {
             //发送
             mailSender.send(message);
             //日志信息
-            logger.info("邮件已经发送。");
+            System.out.println("邮件已发送");
         } catch (javax.mail.MessagingException e) {
-            logger.error("发送邮件时发生异常！", e);
+            System.out.println("邮件发送失败"+e);
         }
     }
 
@@ -104,9 +106,9 @@ public class MailServer implements IMailServer {
             helper.addAttachment(fileName, file);
             mailSender.send(message);
             //日志信息
-            logger.info("邮件已经发送。");
+            System.out.println("邮件已发送");
         } catch (javax.mail.MessagingException e) {
-            logger.error("发送邮件时发生异常！", e);
+            System.out.println("邮件发送失败"+e);
         }
 
     }

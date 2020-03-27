@@ -3,6 +3,7 @@ package com.chapter6;
 import com.chapter6.mapper.UriMapper;
 import com.chapter6.model.ApiUtilData;
 import com.chapter6.model.request.RequestDoTest;
+import com.chapter6.time.MailServer;
 import com.chapter6.util.ApiUtil;
 import com.chapter6.util.TestUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +23,12 @@ class Chapter6ApplicationTests {
     private TestUtil testUtil;
     @Autowired
     private UriMapper uriMapper;
+    @Autowired
+    private MailServer mailServer;
 
     @Test
     void contextLoads() throws Throwable {
-        String s = "a";
-        String[] ss = s.split(",");
-        System.out.println(ss[0]);
-
+        mailServer.sendSimpleMail("513653423@qq.com","主题：你好普通邮件","内容：第一封邮件");
     }
 
 }

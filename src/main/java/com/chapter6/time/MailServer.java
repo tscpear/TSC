@@ -1,14 +1,17 @@
 package com.chapter6.time;
 
 import com.sun.xml.internal.messaging.saaj.packaging.mime.MessagingException;
+import org.apache.logging.log4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+
 import javax.mail.internet.MimeMessage;
-import java.util.logging.Logger;
+import java.io.File;
 
 public class MailServer implements IMailServer {
     private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
@@ -73,13 +76,38 @@ public class MailServer implements IMailServer {
             mailSender.send(message);
             //日志信息
             logger.info("邮件已经发送。");
-        } catch (MessagingException e) {
+        } catch (javax.mail.MessagingException e) {
             logger.error("发送邮件时发生异常！", e);
         }
     }
 
+    /**
+     * 带附件的邮件
+     * @param to 收件人
+     * @param subject 主题
+     * @param content 内容
+     * @param filePath 附件
+     */
     @Override
     public void sendAttachmentsMail(String to, String subject, String content, String filePath) {
+
+        MimeMessage message = mailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom(from);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+
+            FileSystemResource file = new FileSystemResource(new File(filePath));
+            String fileName = filePath.substring(filePath.lastIndexOf(File.separator));
+            helper.addAttachment(fileName, file);
+            mailSender.send(message);
+            //日志信息
+            logger.info("邮件已经发送。");
+        } catch (javax.mail.MessagingException e) {
+            logger.error("发送邮件时发生异常！", e);
+        }
 
     }
 }

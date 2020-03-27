@@ -270,6 +270,7 @@ public class ApiUtil {
         JSONObject jsonManualTest = verification.stringToJsonObject(apiUtilData.getTestCase().getJson());
         //判断boby的传参可是 数组 还是 对象
         if (verification.isJSONArray(apiUtilData.getUri().getJsontext1())) {
+
             JSONArray jsonBaseArray = new JSONArray(apiUtilData.getUri().getJsontext1());
             jsonBase = new JSONObject(jsonBaseArray.get(0));
             bobyType = 1;
@@ -311,9 +312,11 @@ public class ApiUtil {
                     JsonPath p = JsonPath.compile(way);
                     JSONObject values = getSaveValue(apiUtilData, Integer.parseInt(uriId));
                     String value = values.get(name).toString();
-                    ext.set(p, value);
+                        ext.set(p, value);
                 }
             }
+            String s = ext.jsonString();
+            System.out.println(s);
             System.out.println("尼玛" + ext.jsonString());
             return ext.jsonString();
         }

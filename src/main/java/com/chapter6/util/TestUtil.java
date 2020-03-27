@@ -191,7 +191,7 @@ public class TestUtil {
 
 
         testRecordMapper.insert(requestRecordTest);
-        expectUtil.responseResultExpect(expectMap,data);
+        expectUtil.responseResultExpect(expectMap, data);
 
 
         System.out.println(responseValueString);
@@ -265,37 +265,35 @@ public class TestUtil {
             }
             String responseValueString = apiUtil.getResult(response);
             String status = apiUtil.getStatus(response);
-            ExpectMap expectMap = expectUtil.expectResult(status,responseValueString,data.getTestCase());
+            ExpectMap expectMap = expectUtil.expectResult(status, responseValueString, data.getTestCase());
 
             //状态码期望值的验证
 
-                if ("200".equals(apiUtil.getStatus(response))) {
-                    if (data.getUri().getSave().length() > 0) {
-                        JSONObject saves = verification.stringToJsonObject(data.getUri().getSave());
-                        JSONObject saveValues = new JSONObject();
-                        Iterator<String> save = saves.keys();
+            if ("200".equals(apiUtil.getStatus(response))) {
+                if (data.getUri().getSave().length() > 0) {
+                    JSONObject saves = verification.stringToJsonObject(data.getUri().getSave());
+                    JSONObject saveValues = new JSONObject();
+                    Iterator<String> save = saves.keys();
 
-                        /**
-                         * 存入依赖的值
-                         */
-                        while (save.hasNext()) {
-                            String saveName = save.next();
-                            String saveWay = saves.get(saveName).toString();
-                            Object values = JsonPath.read(responseValueString, saveWay);
-                            values = getRelyValue(values);
-                            saveValues.put(saveName, values);
-                        }
-                        requestRecordTest.setValue(saveValues.toString());
+                    /**
+                     * 存入依赖的值
+                     */
+                    while (save.hasNext()) {
+                        String saveName = save.next();
+                        String saveWay = saves.get(saveName).toString();
+                        Object values = JsonPath.read(responseValueString, saveWay);
+                        values = getRelyValue(values);
+                        saveValues.put(saveName, values);
                     }
+                    requestRecordTest.setValue(saveValues.toString());
                 }
+            }
 
 
-                //返回值期望的验证
-                if (data.getTestCase().getApi() == 1) {
-                    requestRecordTest.setResponseValueExpect(apiUtil.isResponseValueExpect(responseValueString, data.getTestCase().getApis()));
-                }
-
-
+            //返回值期望的验证
+            if (data.getTestCase().getApi() == 1) {
+                requestRecordTest.setResponseValueExpect(apiUtil.isResponseValueExpect(responseValueString, data.getTestCase().getApis()));
+            }
 
 
             requestRecordTest.setUserGroupId(userGroupId);
@@ -307,7 +305,7 @@ public class TestUtil {
 
 
             testRecordMapper.insert(requestRecordTest);
-            expectUtil.responseResultExpect(expectMap,data);
+            expectUtil.responseResultExpect(expectMap, data);
 
 
             System.out.println(responseValueString);
@@ -378,14 +376,18 @@ public class TestUtil {
     /**
      * 对获取值的转义
      */
-    public Object getRelyValue(Object o){
-        String s = o+"";
-        Object obj = null;
-        JSONArray array = new JSONArray(s);
-        if(array.length()<2){
-            obj = array.get(0).toString();
+    public Object getRelyValue(Object o) {
+        String s = o + "";
+        if (s.contains("[")) {
+            Object obj = null;
+            JSONArray array = new JSONArray(s);
+            if (array.length() < 2) {
+                obj = array.get(0).toString();
+                return obj;
+            }
         }
-        return obj;
+        return o;
+
     }
 
 

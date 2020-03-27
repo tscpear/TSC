@@ -36,7 +36,7 @@ public class TaskTime {
         doTest.setEnvironment(1);
         doTest.setStoreAccount("13588096710");
         doTest.setPassword("123456");
-        doTest.setTestIdGroup("16,27");
+        doTest.setTestIdGroup("16,17,18,19,20,21,22,25,27,28,29,30");
 
         String msg = testUtil.doGroupTest(doTest,recordId);
         if("true".equals(msg)){

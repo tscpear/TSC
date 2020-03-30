@@ -162,7 +162,7 @@ public class TestUtil {
         RequestRecordTest requestRecordTest = new RequestRecordTest();
 
         //获取用户组ID
-        long userGroupId = Long.parseLong(tokenAndUserGroupId.split(",")[1]);
+            long userGroupId = Long.parseLong(tokenAndUserGroupId.split(",")[1]);
 
         //把对应的recordID和userGroupId 存入data 获取对应组的测试依赖和token
         requestRecordTest.setRecordId(record);

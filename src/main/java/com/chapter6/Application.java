@@ -10,7 +10,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 @SpringBootApplication
-@EnableScheduling
+//@EnableScheduling
 public class Application {
     @Bean
     public CorsFilter corsFilter() {

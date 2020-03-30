@@ -1,9 +1,6 @@
 package com.chapter6.util;
 
-import com.chapter6.mapper.TestMapper;
-import com.chapter6.mapper.TestRecordMapper;
-import com.chapter6.mapper.UriMapper;
-import com.chapter6.mapper.UrlMapper;
+import com.chapter6.mapper.*;
 import com.chapter6.model.ApiUtilData;
 import com.chapter6.model.Url;
 import com.chapter6.model.request.RequestDoTest;
@@ -53,6 +50,8 @@ public class ApiUtil {
     private Verification verification;
     @Autowired
     private TestRecordMapper testRecordMapper;
+    @Autowired
+    private BasicMapper basicMapper;
 
 
     /**
@@ -139,8 +138,16 @@ public class ApiUtil {
     public String getLoginBasic(ApiUtilData apiUtilData) {
         int device = apiUtilData.getUri().getDevice();
         int environment = apiUtilData.getDoTest().getEnvironment();
+
+
         //管理后台 登入的
-        if (device == 1) {
+        if(environment == 1 || environment ==7){
+            return basicMapper.basic(device,1);
+        }else{
+            return basicMapper.basic(device,2);
+        }
+
+       /* if (device == 1) {
             if (environment == 1 || environment == 7) {
                 return "Basic TUFOQUdFTUVOVDo2NTRjMzRkMGFkZTc0N2VlYTBmZDgzZmI5N2JlNzI4MA==";
             } else {
@@ -165,7 +172,7 @@ public class ApiUtil {
                 return "Basic Q1VTVE9NRVJfU0VSVklDRTpvTnZsSmE3VW5JQXlKWTlnaFlaQVFxVHlpNmV1NE8=";
             }
         }
-        return null;
+        return null;*/
     }
 
 

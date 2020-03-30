@@ -4,8 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chapter6.mapper.BasicMapperMapper">
     <select id="getUrl" resultType="com.chapter6.model.Url">
-        select *
-        from url
-        where id = #{urlId};
+        select basic
+        from basic
+        where device = #{device} and environment = #{environment};
     </select>
 </mapper>

@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.chapter6.mapper.BasicMapperMapper">
-    <select id="getUrl" resultType="com.chapter6.model.Url">
+<mapper namespace="com.chapter6.mapper.BasicMapper">
+    <select id="basic" resultType="java.lang.String">
         select basic
         from basic
         where device = #{device} and environment = #{environment};

@@ -142,37 +142,10 @@ public class ApiUtil {
 
         //管理后台 登入的
         if(environment == 1 || environment ==7){
-            return basicMapper.basic(device,1);
+            return basicMapper.basic(1,device);
         }else{
-            return basicMapper.basic(device,2);
+            return basicMapper.basic(2,device);
         }
-
-       /* if (device == 1) {
-            if (environment == 1 || environment == 7) {
-                return "Basic TUFOQUdFTUVOVDo2NTRjMzRkMGFkZTc0N2VlYTBmZDgzZmI5N2JlNzI4MA==";
-            } else {
-                return "Basic TUFOQUdFTUVOVDpjZGU1ZDQ5OGRmNWNkMGJmMTdlY2ZiYmJkZGY5M2E0Nw==";
-            }
-            //门店APP
-        } else if (device == 2) {
-            if (environment == 1) {
-                return "Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjU4NjgzZmU4ZWU2MDRmN2I5MTlhYzM0YTFmMjVkOGUy";
-            } else if (environment == 7) {
-                return "Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjU4NjgzZmU4ZWU2MDRmN2I5MTlhYzM0YTFmMjVkOGUy";
-            } else {
-                return "Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjEzNDgwNWRiZWIyODZhZjk3NTRjNTM5ODIzZGJmMTI4";
-            }
-            //司机端
-        } else if (device == 4) {
-            if (environment == 1) {
-                return "Basic VFJVQ0tFUjo2NDVjOGE5MjllNmM0MTJjOWZlYmY5MGIyYWQwNzM3NA==";
-            } else if (environment == 7) {
-                return "Basic ";
-            } else {
-                return "Basic Q1VTVE9NRVJfU0VSVklDRTpvTnZsSmE3VW5JQXlKWTlnaFlaQVFxVHlpNmV1NE8=";
-            }
-        }
-        return null;*/
     }
 
 

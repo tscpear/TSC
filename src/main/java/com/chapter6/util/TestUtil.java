@@ -40,10 +40,9 @@ public class TestUtil {
     private ExpectUtil expectUtil;
 
     /**
-     * 登入+获取Token 或者
+     * 门店端登入数据
      */
     public String getToken(ApiUtilData data, long record) throws Throwable {
-
         long userGroupId = System.currentTimeMillis();
         RequestRecordTest requestRecordTest = new RequestRecordTest();
         requestRecordTest.setTestcaseId(0);
@@ -63,25 +62,50 @@ public class TestUtil {
         );
 
 
-        //获取登入接口的数据
+        /**
+         * 登入数据的演算
+         * @1、获取登入接口
+         * @2、区分验证码/密码
+         */
+
+        //-----------------------获取登入接口--------------------
         RequestUri loginUri = uriMapper.getUriById(0);
+        //---------------------------------------------------
+
 
         RequestTestCase loginTestCase = new RequestTestCase();
         JSONObject webformOfTest = new JSONObject();
-        webformOfTest.put("mobile", data.getDoTest().getStoreAccount());
-        if (data.getDoTest().getPassword().length() > 0) {
-            webformOfTest.put("grant_type", "store_password");
-            webformOfTest.put("password", DigestUtils.md5DigestAsHex(
-                    data.getDoTest().getPassword().getBytes()));
+
+
+        //----------------------------密码/验证码-------------------------
+        String mobile = data.getDoTest().getStoreAccount();
+        String storePassword = data.getDoTest().getStorePassword();
+        String password = "";
+        String grantType = "store_password";
+        String storeCodeword = data.getDoTest().getStoreCodeword();
+        String passwordType = "password";
+        if (storePassword.length() > 0) {
+            password = DigestUtils.md5DigestAsHex(storePassword.getBytes());
         } else {
-            webformOfTest.put("grant_type", "sms_code");
-            if (data.getDoTest().getCodeword().equals("8888")) {
-                getCode(data.getDoTest().getStoreAccount(), environment);
+            grantType = "sms_code";
+            passwordType = "sms_code";
+            if ("8888".equals(storeCodeword)) {
+                getCode(mobile, environment);
+                password = DigestUtils.md5DigestAsHex(storeCodeword.getBytes());
             }
-            webformOfTest.put("smsCode", DigestUtils.md5DigestAsHex(
-                    data.getDoTest().getCodeword().getBytes()));
         }
+        //-----------------------------------------------------------------
+
+
+
+        //------------------------存放登入数据-------------------------------
+        webformOfTest.put("mobile", mobile);
+        webformOfTest.put(passwordType,password);
+        webformOfTest.put("grant_type",grantType);
         loginTestCase.setWebform(webformOfTest.toString());
+        //----------------------------------------------------------------
+
+
 
         loginData.setTestCase(loginTestCase);
         loginData.setUri(loginUri);

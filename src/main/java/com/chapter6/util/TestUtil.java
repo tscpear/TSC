@@ -93,12 +93,10 @@ public class TestUtil {
 
         Map<String, String> response = apiUtil.getResponse(loginData, apiUtil.getLoginBasic(data));
         /*发送请求*/
-
+        JSONObject result = verification.stringToJsonObject(
+                apiUtil.getResult(response)
+        );
         if (apiUtil.getStatus(response).equals("200")) {
-            JSONObject result = verification.stringToJsonObject(
-                    apiUtil.getResult(response)
-            );
-
 
             requestRecordTest.setResult(1);
             requestRecordTest.setResponse(result.toString());

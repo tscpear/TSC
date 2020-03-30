@@ -28,4 +28,5 @@ public class ResponseTestCase {
     private Integer device;
     private Integer expectOfStatus;
     private Integer status;
+    private Integer accountType;
 }

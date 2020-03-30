@@ -24,4 +24,5 @@ public class RequestTestCase {
     private int disable;
     private Integer expectOfStatus = 0;
     private Integer status;
+    private Integer accountType;
 }

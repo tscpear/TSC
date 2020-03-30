@@ -48,7 +48,7 @@ public class TaskTime {
                     int testId = recordTest.getTestcaseId();
                     String expect = recordTest.getStatusExpect();
                     array.add(obj);
-                    if(!obj.get(1).equals("true")){
+                    if(!"true".equals(expect)){
                         String response = recordTest.getResponse();
                         int uriId = testMapper.getUriIdById(testId);
                         String uri = uriMapper.getUriByUriId(uriId);

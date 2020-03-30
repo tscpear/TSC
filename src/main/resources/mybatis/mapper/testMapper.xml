@@ -24,6 +24,7 @@
         <result property="disable" column="disable"/>
         <result property="expectOfStatus" column="expect_of_status"/>
         <result property="status" column="status"/>
+        <result property="accountType" column="account_type"/>
     </resultMap>
 
     <sql id="list_count">
@@ -69,7 +70,8 @@
                              request,
                              response,
                              expect_of_status,
-                             status
+                             status,
+                             account_type
         )
         value
         (
@@ -108,6 +110,8 @@
         #{expectOfStatus}
         ,
         #{status}
+        ,
+        #{accountType}
         );
     </insert>
     <select id="testCount" resultType="Integer">
@@ -138,7 +142,8 @@
             request          = #{request},
             response         = #{response},
             expect_of_status = #{expectOfStatus},
-            status           = #{status}
+            status           = #{status},
+            account_tyepe    = #{accountType}
         where id = #{testCaseId}
     </update>
     <select id="findCountByApi" resultType="Integer">
@@ -168,6 +173,8 @@
         where id = #{testcaseId};
     </select>
     <select id="getRelyByTestcaseId" resultType="java.lang.String">
-        select rely from testcase where id = #{testcaseId};
+        select rely
+        from testcase
+        where id = #{testcaseId};
     </select>
 </mapper>

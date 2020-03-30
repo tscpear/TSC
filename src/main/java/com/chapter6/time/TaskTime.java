@@ -47,13 +47,12 @@ public class TaskTime {
                     JSONArray obj = new JSONArray();
                     int testId = recordTest.getTestcaseId();
                     String expect = recordTest.getStatusExpect();
-                    obj.add(0,testId);
-                    obj.add(1,recordTest.getStatusExpect());
                     array.add(obj);
                     if(!obj.get(1).equals("true")){
+                        String response = recordTest.getResponse();
                         int uriId = testMapper.getUriIdById(testId);
                         String uri = uriMapper.getUriByUriId(uriId);
-                        text = "错误接口【" + uri + "】：【" + expect +"/r/n";
+                        text = "错误接口【" + uri + "】：【" + expect + "】【" + response;
                     }
                 }
 
@@ -63,8 +62,8 @@ public class TaskTime {
                 mailServer.sendSimpleMail("513653423@qq.com","准生产",text);
             }
         }else{
-            mailServer.sendSimpleMail("515090974@qq.com","准生产","内容：登入有问题");
-            mailServer.sendSimpleMail("513653423@qq.com","准生产","内容：登入有问题");
+            mailServer.sendSimpleMail("515090974@qq.com","准生产","内容：登入有问题" + msg);
+            mailServer.sendSimpleMail("513653423@qq.com","准生产","内容：登入有问题"+ msg);
         }
         }
 

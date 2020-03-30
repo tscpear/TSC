@@ -635,5 +635,21 @@ public class ApiUtil {
        }
        return "true";
     }
+    /**
+     * 期望值的验证---数据库期望值的验证
+     * @1、需要校验的字段
+     * @2、需要获取数据的sql
+     * @3、需要校验的公式（安置内部校验的逻辑）
+     * [{校验逻辑：{值A：{常量/sql/response}}]
+     */
+    public String isSqlValue(ApiUtilData data) throws Throwable {
+        String sqlExpectValues = data.getTestCase().getSqls();
+        JSONObject sqlExpectValue = verification.stringToJsonObject(sqlExpectValues);
+
+
+
+
+        return null;
+    }
 
 }

@@ -7,5 +7,4 @@ public class Basic {
     private int id;
     private int environment;
     private String basic;
-    private int device;
-}
+    private int device;}
